@@ -1,0 +1,54 @@
+{
+  "name": "@barelyhuman/preact-island-plugins",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.cjs",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.cjs",
+      "import": "./index.js"
+    },
+    "./esbuild": {
+      "types": "./esbuild.d.ts",
+      "require": "./esbuild.cjs",
+      "import": "./esbuild.js"
+    },
+    "./*": "./*"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./*"
+      ]
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,jsx,md,json}": [
+      "npx prettier --write"
+    ]
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:post": "esno scripts/postbuild.ts",
+    "dev": "tsup --watch src"
+  },
+  "prettier": "@barelyhuman/prettier-config",
+  "dependencies": {
+    "@babel/generator": "^7.21.1",
+    "@babel/parser": "^7.21.1"
+  },
+  "devDependencies": {
+    "@barelyhuman/prettier-config": "^1.1.0",
+    "@types/node": "^18.14.0",
+    "esno": "^0.16.3",
+    "lint-staged": "^13.1.2",
+    "prettier": "^2.8.4",
+    "tiny-glob": "^0.2.9",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5"
+  }
+}
