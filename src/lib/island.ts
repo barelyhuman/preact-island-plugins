@@ -1,35 +1,22 @@
 // @ts-expect-error no-types
 import _generate from '@babel/generator'
 import { parse as jsxParser } from '@babel/parser'
-import fs from "fs/promises"
+
+import fs from 'fs/promises'
+import path from 'path'
 
 const generate = _generate.default
 
-const PREACT_IMPORT_AST = {
-  type: 'ImportDeclaration',
-  specifiers: [
-    {
-      type: 'ImportSpecifier',
-      imported: {
-        type: 'Identifier',
-        name: 'h',
-      },
-      importKind: null,
-      local: {
-        type: 'Identifier',
-        name: 'h',
-      },
-    },
-  ],
-  importKind: 'value',
-  source: {
-    type: 'StringLiteral',
-    value: 'preact',
-  },
+const PREACT_IMPORT_FRAG_AST = astFromCode(`import {Fragment} from "preact";`)
+
+const PREACT_IMPORT_AST = astFromCode(`import {h} from "preact";`)
+
+export type Options = {
+  atomic: boolean
 }
 
-export async function sourceToIslands(sourcePath: string) {
-  const source = await fs.readFile(sourcePath, "utf8")
+export async function sourceToIslands(sourcePath: string, options: Options) {
+  const source = await fs.readFile(sourcePath, 'utf8')
   const ast = jsxParser(source, {
     sourceType: 'module',
     plugins: ['jsx'],
@@ -37,7 +24,7 @@ export async function sourceToIslands(sourcePath: string) {
 
   const funcName = await getDefaultExportName(ast, sourcePath)
   const client = buildIslandClient(funcName, sourcePath)
-  const server = buildIslandServer(funcName, ast)
+  const server = buildIslandServer(funcName, ast, sourcePath, options)
 
   return { client, server }
 }
@@ -46,8 +33,7 @@ async function getDefaultExportName(ast: any, filePath: string) {
   let funcName = ''
   for (let i = 0; i <= ast.program.body.length; i++) {
     const child = ast.program.body[i]
-    if (child.type !== 'ExportDefaultDeclaration')
-      continue
+    if (child.type !== 'ExportDefaultDeclaration') continue
 
     if (child.declaration.type === 'Identifier') {
       funcName = child.declaration.name
@@ -58,10 +44,9 @@ async function getDefaultExportName(ast: any, filePath: string) {
       const func = child.declaration
       if (func.id && func.id.type === 'Identifier') {
         funcName = func.id.name
-      }
-      else {
+      } else {
         throw new Error(
-          `[island-loader] ${filePath} doesn't export a named default`,
+          `[island-loader] ${filePath} doesn't export a named default`
         )
       }
       break
@@ -82,9 +67,15 @@ customElements.define("${islandName}", class Island${name} extends HTMLElement {
 })`
 }
 
-function buildIslandServer(funcName: string, ast: any) {
-  let hasPreactImport = false
-  let hasHImport = false
+function buildIslandServer(
+  funcName: string,
+  ast: any,
+  sourcePath: string,
+  options: Options
+) {
+  let hasPreactImport = false,
+    hasHImport = false,
+    hasFragImport = false
 
   ast.program.body.forEach((child: any, index: number) => {
     if (child.type === 'ExportDefaultDeclaration') {
@@ -101,23 +92,31 @@ function buildIslandServer(funcName: string, ast: any) {
     }
     if (child.type === 'ImportDeclaration') {
       if (
-        child.source.type === 'StringLiteral'
-        && child.source.value === 'preact'
+        child.source.type === 'StringLiteral' &&
+        child.source.value === 'preact'
       )
         hasPreactImport = true
 
       if (
-        hasPreactImport
-        && child.specifiers.findIndex(x => x.imported.name === 'h') > -1
+        hasPreactImport &&
+        child.specifiers.findIndex(x => x.imported.name === 'h') > -1
       )
         hasHImport = true
+
+      if (
+        hasPreactImport &&
+        child.specifiers.findIndex(x => x.imported.name === 'Fragment') > -1
+      )
+        hasFragImport = true
     }
   })
 
-  if (!hasHImport)
-    ast.program.body.unshift(PREACT_IMPORT_AST)
+  if (!hasHImport) ast.program.body.unshift(PREACT_IMPORT_AST)
+  if (!hasFragImport) ast.program.body.unshift(PREACT_IMPORT_FRAG_AST)
 
-  ast.program.body.push(modifyASTForIslandWrapper(funcName))
+  ast.program.body.push(
+    modifyASTForIslandWrapper(funcName, sourcePath, options)
+  )
   return generate(ast).code
 }
 
@@ -125,102 +124,44 @@ function getIslandName(name: string): string {
   return `island${name.replace(/([A-Z])/g, '-$1').toLowerCase()}`
 }
 
-export function modifyASTForIslandWrapper(name: string) {
+export function modifyASTForIslandWrapper(
+  name: string,
+  sourcePath: string,
+  options: Options
+) {
   const islandName = getIslandName(name)
-  return {
-    type: 'ExportDefaultDeclaration',
-    declaration: {
-      type: 'FunctionDeclaration',
-      id: {
-        type: 'Identifier',
-        name: `Island${name}`,
-      },
-      generator: false,
-      async: false,
-      params: [
-        {
-          type: 'Identifier',
-          name: 'props',
-        },
-      ],
-      body: {
-        type: 'BlockStatement',
-        body: [
-          {
-            type: 'ReturnStatement',
-            argument: {
-              type: 'CallExpression',
-              callee: {
-                type: 'Identifier',
-                name: 'h',
-              },
-              arguments: [
-                {
-                  type: 'StringLiteral',
-                  value: islandName,
-                },
-                {
-                  type: 'ObjectExpression',
-                  properties: [
-                    {
-                      type: 'ObjectProperty',
-                      method: false,
-                      key: {
-                        type: 'StringLiteral',
-                        extra: {
-                          rawValue: 'data-props',
-                          raw: '"data-props"',
-                        },
-                        value: 'data-props',
-                      },
-                      computed: false,
-                      shorthand: false,
-                      value: {
-                        type: 'CallExpression',
-                        callee: {
-                          type: 'MemberExpression',
-                          object: {
-                            type: 'Identifier',
-                            name: 'JSON',
-                          },
-                          computed: false,
-                          property: {
-                            type: 'Identifier',
-                            name: 'stringify',
-                          },
-                        },
-                        arguments: [
-                          {
-                            type: 'Identifier',
-                            name: 'props',
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-                {
-                  type: 'CallExpression',
-                  callee: {
-                    type: 'Identifier',
-                    name: 'h',
-                  },
-                  arguments: [
-                    {
-                      type: 'Identifier',
-                      name,
-                    },
-                    {
-                      type: 'Identifier',
-                      name: 'props',
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
+  const scriptName = sourcePath.trim().replace(/.js$/, '.client.js')
+  const scriptBaseName = path.basename(scriptName)
+  let code
+  if (options.atomic) {
+    code = `
+    export default function Island${name}(props) {
+      return h(Fragment,{},
+        h("${islandName}",{ "data-props": JSON.stringify(props) },h(${name}, props)),
+        h("script",{async:true, src:"/public/js/${scriptBaseName}", type:"module"}),
+      )
+    }
+  `
+  } else {
+    code = `
+    export default function Island${name}(props) {
+      return h(
+        Fragment,
+        {},
+        h("${islandName}",{
+          props:JSON.stringify(props)
+        })
+      )
+    }
+  `
   }
+  return astFromCode(code)
+}
+
+function astFromCode(code: string): any {
+  const ast = jsxParser(code, {
+    sourceType: 'module',
+  })
+
+  return ast.program.body[0]
 }
