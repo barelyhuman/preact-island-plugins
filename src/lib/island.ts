@@ -99,13 +99,14 @@ function buildIslandServer(
 
       if (
         hasPreactImport &&
-        child.specifiers.findIndex(x => x.imported.name === 'h') > -1
+        child.specifiers.findIndex((x: any) => x.imported.name === 'h') > -1
       )
         hasHImport = true
 
       if (
         hasPreactImport &&
-        child.specifiers.findIndex(x => x.imported.name === 'Fragment') > -1
+        child.specifiers.findIndex((x: any) => x.imported.name === 'Fragment') >
+          -1
       )
         hasFragImport = true
     }
