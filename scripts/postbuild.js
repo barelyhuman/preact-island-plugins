@@ -1,7 +1,7 @@
 import { join, basename, dirname, resolve } from 'path'
 import { promises as fs } from 'fs'
 import { fileURLToPath } from 'url'
-import glob from 'tiny-glob'
+import glob from 'fast-glob'
 
 async function run() {
   const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
