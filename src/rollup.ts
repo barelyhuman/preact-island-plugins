@@ -5,11 +5,10 @@ import { sourceToIslands } from './lib/island'
 export default function preactIslandPlugin({ atomic = false, cwd = '.' }) {
   return {
     name: 'preact-island-plugin',
-    async load(id: any) {
+    async transform(code: string, id: string) {
       if (!/\.island\.js$/.test(id)) {
         return null
       }
-
       const ogFilePath = id
       const { server, client } = await sourceToIslands(ogFilePath, {
         atomic: atomic || false,
@@ -23,7 +22,9 @@ export default function preactIslandPlugin({ atomic = false, cwd = '.' }) {
       // can't use emitFile for this reason
       await fs.writeFile(fpath, client, 'utf8')
 
-      return server
+      return {
+        code: server,
+      }
     },
   }
 }

@@ -12,12 +12,12 @@ function getServerConfig() {
       format: 'cjs',
     },
     plugins: [
-      babel(),
       nodeResolve(),
       preactIslandPlugin({
         atomic: false,
         cwd: '.',
       }),
+      babel(),
     ],
   }
 }
