@@ -13,5 +13,6 @@
 - [ ] Bundlers
   - [ ] Webpack
   - [x] esbuild
+  - [x] rollup
 - [ ] Make it faster
 - [ ] Tests (loads of them)

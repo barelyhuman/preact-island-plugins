@@ -17,6 +17,11 @@
       "require": "./esbuild.cjs",
       "import": "./esbuild.js"
     },
+    "./rollup": {
+      "types": "./rollup.d.ts",
+      "require": "./rollup.cjs",
+      "import": "./rollup.js"
+    },
     "./*": "./*"
   },
   "typesVersions": {
