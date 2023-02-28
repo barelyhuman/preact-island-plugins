@@ -5,6 +5,8 @@ import { parse as jsxParser } from '@babel/parser'
 import fs from 'fs/promises'
 import path from 'path'
 
+const PREFIX = '[preact-island]'
+
 const generate = _generate.default
 
 const PREACT_IMPORT_FRAG_AST = astFromCode(`import {Fragment} from "preact";`)
@@ -15,12 +17,29 @@ export type Options = {
   atomic: boolean
 }
 
-export async function sourceToIslands(sourcePath: string, options: Options) {
-  const source = await fs.readFile(sourcePath, 'utf8')
-  const ast = jsxParser(source, {
+async function sourceToAST(sourceCode: string) {
+  return jsxParser(sourceCode, {
     sourceType: 'module',
     plugins: ['jsx'],
   })
+}
+
+export async function sourceToIslands(sourcePath: string, options: Options) {
+  let ast,
+    source: string = ''
+
+  if ((await fs.stat(sourcePath)).isFile()) {
+    source = await fs.readFile(sourcePath, 'utf8')
+    ast = await sourceToAST(source)
+  } else {
+    try {
+      ast = await sourceToAST(sourcePath)
+    } catch (err) {
+      throw new Error(
+        `${PREFIX} Invalid Source, the provided source was neither a filepath nor sourcecode: ${sourcePath}`
+      )
+    }
+  }
 
   const funcName = await getDefaultExportName(ast, sourcePath)
   const client = buildIslandClient(funcName, sourcePath)
@@ -46,7 +65,7 @@ async function getDefaultExportName(ast: any, filePath: string) {
         funcName = func.id.name
       } else {
         throw new Error(
-          `[island-loader] ${filePath} doesn't export a named default`
+          `${PREFIX} Unsupported Component: ${filePath} doesn't export a default function / component`
         )
       }
       break
