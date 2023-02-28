@@ -4,41 +4,55 @@ const preactIslandPlugin = require('../../dist/rollup.cjs').default
 const glob = require('tiny-glob')
 const fs = require('fs').promises
 
-module.exports = async function () {
-  return [
-    {
-      input: 'server.js',
-      output: {
-        dir: 'dist',
-        format: 'cjs',
-      },
-      plugins: [
-        babel(),
-        nodeResolve(),
-        preactIslandPlugin({
-          atomic: false,
-          cwd: '.',
-        }),
-      ],
+function getServerConfig() {
+  return {
+    input: 'server.js',
+    output: {
+      dir: 'dist',
+      format: 'cjs',
     },
-    await pipe(
-      () =>
-        glob('./**/*.client.js', {
-          absolute: false,
-          cwd: '.generated',
-        }),
-      files => files.map(x => `import "./${x}";`).join('\n'),
-      imports => fs.writeFile('./.generated/client.js', imports, 'utf8'),
-      () => ({
-        input: './.generated/client.js',
-        output: {
-          dir: 'dist/js',
-          format: 'esm',
-        },
-        plugins: [babel(), nodeResolve()],
-      })
-    ),
-  ]
+    plugins: [
+      babel(),
+      nodeResolve(),
+      preactIslandPlugin({
+        atomic: false,
+        cwd: '.',
+      }),
+    ],
+  }
+}
+
+function getClientConfig() {
+  return pipe(
+    () =>
+      glob('./**/*.client.js', {
+        absolute: false,
+        cwd: '.generated',
+      }),
+    files => files.map(x => `import "./${x}";`).join('\n'),
+    imports => fs.writeFile('./.generated/client.js', imports, 'utf8'),
+    () => ({
+      input: './.generated/client.js',
+      output: {
+        dir: 'dist/js',
+        format: 'esm',
+      },
+      plugins: [babel(), nodeResolve()],
+    })
+  )
+}
+
+module.exports = async function (args) {
+  let c = Object.keys(args).find(key => key.startsWith('config-'))
+  if (c) {
+    c = c.slice('config-'.length).replace(/_/g, '/')
+  } else {
+    c = 'index'
+  }
+  return [
+    (c === 'server' && getServerConfig()) || undefined,
+    (c === 'client' && (await getClientConfig())) || undefined,
+  ].filter(x => x)
 }
 
 function pipe(...args) {
