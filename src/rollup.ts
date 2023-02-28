@@ -10,17 +10,17 @@ export default function preactIslandPlugin({
 }: Options) {
   return {
     name: 'preact-island-plugin',
-    async transform(code: string, id: string) {
+    async transform(_: any, id: string) {
       if (!/\.island\.js$/.test(id)) {
         return null
       }
-      const ogFilePath = id
-      const { server, client } = await sourceToIslands(ogFilePath, clientDir, {
-        atomic: atomic || false,
+
+      const { server, client } = await sourceToIslands(id, clientDir, {
+        atomic,
       })
 
       const genPath = await createGeneratedDir({ cwd })
-      const fileName = path.basename(ogFilePath).replace('.js', '.client.js')
+      const fileName = path.basename(id).replace('.js', '.client.js')
       const fpath = path.join(genPath, fileName)
 
       // needs to be in `.generated/` for the client build to pick it up

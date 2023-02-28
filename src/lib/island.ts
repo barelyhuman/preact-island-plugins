@@ -29,20 +29,20 @@ export async function sourceToIslands(
   clientDir: string,
   options: Options
 ) {
-  let ast,
-    source: string = ''
+  let ast
 
-  if ((await fs.stat(sourcePath)).isFile()) {
-    source = await fs.readFile(sourcePath, 'utf8')
-    ast = await sourceToAST(source)
-  } else {
-    try {
-      ast = await sourceToAST(sourcePath)
-    } catch (err) {
+  try {
+    const stat = await fs.stat(sourcePath)
+    if (!stat.isFile())
       throw new Error(
-        `${PREFIX} Invalid Source, the provided source was neither a filepath nor sourcecode: ${sourcePath}`
+        `${PREFIX} Invalid Source, the provided source was not a valid filepath: ${sourcePath}`
       )
-    }
+    const source = await fs.readFile(sourcePath, 'utf8')
+    ast = await sourceToAST(source)
+  } catch (err) {
+    throw new Error(
+      `${PREFIX} Invalid Source, the provided source failed to parse: ${sourcePath}`
+    )
   }
 
   const funcName = await getDefaultExportName(ast, sourcePath)
