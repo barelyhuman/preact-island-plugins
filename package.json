@@ -38,7 +38,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "build:post": "esno scripts/postbuild.ts",
+    "build:post": "node scripts/postbuild.js",
     "dev": "tsup --watch src",
     "fix": "npx prettier --write ."
   },
