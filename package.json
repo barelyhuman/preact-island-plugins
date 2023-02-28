@@ -34,7 +34,8 @@
   "scripts": {
     "build": "tsup",
     "build:post": "esno scripts/postbuild.ts",
-    "dev": "tsup --watch src"
+    "dev": "tsup --watch src",
+    "fix": "npx prettier --write ."
   },
   "prettier": "@barelyhuman/prettier-config",
   "dependencies": {

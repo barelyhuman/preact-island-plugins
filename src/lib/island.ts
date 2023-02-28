@@ -150,7 +150,7 @@ export function modifyASTForIslandWrapper(
         Fragment,
         {},
         h("${islandName}",{
-          props:JSON.stringify(props)
+          "data-props":JSON.stringify(props)
         })
       )
     }
