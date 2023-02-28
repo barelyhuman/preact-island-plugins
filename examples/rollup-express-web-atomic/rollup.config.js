@@ -14,8 +14,8 @@ function getServerConfig() {
     plugins: [
       nodeResolve(),
       preactIslandPlugin({
-        clientDir: 'dist/public/js',
-        atomic: false,
+        clientDir: '/public/js',
+        atomic: true,
         cwd: '.',
       }),
       babel(),
@@ -27,13 +27,11 @@ function getClientConfig() {
   return pipe(
     () =>
       glob('./**/*.client.js', {
-        absolute: false,
+        absolute: true,
         cwd: '.generated',
       }),
-    files => files.map(x => `import "./${x}";`).join('\n'),
-    imports => fs.writeFile('./.generated/client.js', imports, 'utf8'),
-    () => ({
-      input: './.generated/client.js',
+    files => ({
+      input: files,
       output: {
         dir: 'dist/js',
         format: 'esm',

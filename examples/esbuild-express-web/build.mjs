@@ -54,7 +54,7 @@ const server = () =>
     plugins: [
       nodeExternalsPlugin(),
       preactIslandPlugin({
-        clientDir: 'dist/public/js',
+        clientDir: '/public/js',
         cwd: url.fileURLToPath(new URL('.', import.meta.url)),
       }),
     ],
