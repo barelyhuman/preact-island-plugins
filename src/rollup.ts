@@ -1,8 +1,13 @@
 import fs from 'fs/promises'
 import path from 'path'
+import { Options } from './lib/common'
 import { sourceToIslands } from './lib/island'
 
-export default function preactIslandPlugin({ atomic = false, cwd = '.' }) {
+export default function preactIslandPlugin({
+  atomic = false,
+  cwd = '.',
+  clientDir = '',
+}: Options) {
   return {
     name: 'preact-island-plugin',
     async transform(code: string, id: string) {
@@ -10,7 +15,7 @@ export default function preactIslandPlugin({ atomic = false, cwd = '.' }) {
         return null
       }
       const ogFilePath = id
-      const { server, client } = await sourceToIslands(ogFilePath, {
+      const { server, client } = await sourceToIslands(ogFilePath, clientDir, {
         atomic: atomic || false,
       })
 

@@ -14,6 +14,7 @@ function getServerConfig() {
     plugins: [
       nodeResolve(),
       preactIslandPlugin({
+        clientDir: 'dist/public/js',
         atomic: false,
         cwd: '.',
       }),

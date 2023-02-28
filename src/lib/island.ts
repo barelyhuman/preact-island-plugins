@@ -24,7 +24,11 @@ async function sourceToAST(sourceCode: string) {
   })
 }
 
-export async function sourceToIslands(sourcePath: string, options: Options) {
+export async function sourceToIslands(
+  sourcePath: string,
+  clientDir: string,
+  options: Options
+) {
   let ast,
     source: string = ''
 
@@ -43,7 +47,13 @@ export async function sourceToIslands(sourcePath: string, options: Options) {
 
   const funcName = await getDefaultExportName(ast, sourcePath)
   const client = buildIslandClient(funcName, sourcePath)
-  const server = buildIslandServer(funcName, ast, sourcePath, options)
+  const server = buildIslandServer(
+    funcName,
+    ast,
+    sourcePath,
+    clientDir,
+    options
+  )
 
   return { client, server }
 }
@@ -90,6 +100,7 @@ function buildIslandServer(
   funcName: string,
   ast: any,
   sourcePath: string,
+  clientDir: string,
   options: Options
 ) {
   let hasPreactImport = false,
@@ -135,7 +146,7 @@ function buildIslandServer(
   if (!hasFragImport) ast.program.body.unshift(PREACT_IMPORT_FRAG_AST)
 
   ast.program.body.push(
-    modifyASTForIslandWrapper(funcName, sourcePath, options)
+    modifyASTForIslandWrapper(funcName, sourcePath, clientDir, options)
   )
   return generate(ast).code
 }
@@ -147,6 +158,7 @@ function getIslandName(name: string): string {
 export function modifyASTForIslandWrapper(
   name: string,
   sourcePath: string,
+  clientDir: string,
   options: Options
 ) {
   const islandName = getIslandName(name)
@@ -158,7 +170,10 @@ export function modifyASTForIslandWrapper(
     export default function Island${name}(props) {
       return h(Fragment,{},
         h("${islandName}",{ "data-props": JSON.stringify(props) },h(${name}, props)),
-        h("script",{async:true, src:"/public/js/${scriptBaseName}", type:"module"}),
+        h("script",{async:true, src:"${path.join(
+          clientDir,
+          scriptBaseName
+        )}", type:"module"}),
       )
     }
   `
