@@ -55,7 +55,7 @@ export async function sourceToIslands(
     options
   )
 
-  return { client, server }
+  return { client, server, ast }
 }
 
 async function getDefaultExportName(ast: any, filePath: string) {
@@ -90,8 +90,9 @@ export function buildIslandClient(name: string, importPath: string) {
   
 customElements.define("${islandName}", class Island${name} extends HTMLElement { 
   async connectedCallback() {
-      const c =await import(${JSON.stringify(importPath)}); 
-      const props = JSON.parse(this.dataset.props || '{}'); hydrate(h(c.default, props), this);
+      const c = await import(${JSON.stringify(importPath)}); 
+      const props = JSON.parse(this.dataset.props || '{}'); 
+      hydrate(h(c.default, props), this);
   } 
 })`
 }
@@ -183,9 +184,13 @@ export function modifyASTForIslandWrapper(
       return h(
         Fragment,
         {},
-        h("${islandName}",{
-          "data-props":JSON.stringify(props)
-        })
+        h(
+          "${islandName}",
+          {
+            "data-props":JSON.stringify(props)
+          }, 
+          h(${name},props)
+        )
       )
     }
   `

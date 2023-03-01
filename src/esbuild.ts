@@ -11,7 +11,7 @@ export default function preactIslandPlugin({
   return {
     name: 'preact-island-plugin',
     async setup(build: any) {
-      build.onLoad({ filter: /\.island\.js$/ }, async (args: any) => {
+      build.onLoad({ filter: /\.island\.jsx?$/ }, async (args: any) => {
         const ogFilePath = args.path
 
         const { server, client } = await sourceToIslands(
