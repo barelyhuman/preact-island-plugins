@@ -2,11 +2,11 @@ import fs from 'fs/promises'
 import path from 'path'
 import { Options } from './lib/common'
 import { sourceToIslands } from './lib/island'
-import { transformWithEsbuild, ESBuildTransformResult } from 'vite'
+import { transformWithEsbuild, Plugin } from 'vite'
 
 export default function preactIslandPlugin(
   { atomic = false, cwd = '.', clientDir = '' }: Options = <Options>{}
-) {
+): Plugin {
   return {
     name: 'preact-island-plugin',
     async transform(_: any, id: string) {
@@ -27,15 +27,11 @@ export default function preactIslandPlugin(
       // needs to be in `.generated/` for the client build to pick it up
       // can't use emitFile for this reason
       await fs.writeFile(fpath, _client, 'utf8')
-      const result: ESBuildTransformResult = await transformWithEsbuild(
-        server,
-        id,
-        {
-          loader: 'jsx',
-          jsx: 'automatic',
-          jsxImportSource: 'preact',
-        }
-      )
+      const result = await transformWithEsbuild(server, id, {
+        loader: 'jsx',
+        jsx: 'automatic',
+        jsxImportSource: 'preact',
+      })
 
       return {
         ...result,

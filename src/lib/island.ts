@@ -1,5 +1,6 @@
 // @ts-expect-error no-types
 import _generate from '@babel/generator'
+
 import { parse as jsxParser } from '@babel/parser'
 
 import fs from 'fs/promises'
@@ -24,11 +25,17 @@ async function sourceToAST(sourceCode: string) {
   })
 }
 
+type SourceToIslands = {
+  client: string
+  server: string
+  ast: any
+}
+
 export async function sourceToIslands(
   sourcePath: string,
   clientDir: string,
   options: Options
-) {
+): Promise<SourceToIslands> {
   let ast
 
   try {
