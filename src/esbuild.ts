@@ -1,22 +1,26 @@
 import fs from 'fs/promises'
 import path from 'path'
+import { Options } from './lib/common.js'
 import { sourceToIslands } from './lib/island.js'
 
-export type Options = {
-  cwd: string
-  atomic?: boolean
-}
-
-export default function preactIslandPlugin({ cwd, atomic }: Options) {
+export default function preactIslandPlugin({
+  cwd,
+  atomic,
+  clientDir: clientDir,
+}: Options) {
   return {
     name: 'preact-island-plugin',
     async setup(build: any) {
-      build.onLoad({ filter: /\.island\.js$/ }, async (args: any) => {
+      build.onLoad({ filter: /\.island\.jsx?$/ }, async (args: any) => {
         const ogFilePath = args.path
 
-        const { server, client } = await sourceToIslands(ogFilePath, {
-          atomic: atomic || false,
-        })
+        const { server, client } = await sourceToIslands(
+          ogFilePath,
+          clientDir,
+          {
+            atomic: atomic || false,
+          }
+        )
 
         const genPath = await createGeneratedDir({ cwd })
         const fileName = path.basename(ogFilePath)

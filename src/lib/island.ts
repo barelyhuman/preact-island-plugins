@@ -1,9 +1,12 @@
 // @ts-expect-error no-types
 import _generate from '@babel/generator'
+
 import { parse as jsxParser } from '@babel/parser'
 
 import fs from 'fs/promises'
 import path from 'path'
+
+const PREFIX = '[preact-island]'
 
 const generate = _generate.default
 
@@ -15,18 +18,51 @@ export type Options = {
   atomic: boolean
 }
 
-export async function sourceToIslands(sourcePath: string, options: Options) {
-  const source = await fs.readFile(sourcePath, 'utf8')
-  const ast = jsxParser(source, {
+async function sourceToAST(sourceCode: string) {
+  return jsxParser(sourceCode, {
     sourceType: 'module',
     plugins: ['jsx'],
   })
+}
+
+type SourceToIslands = {
+  client: string
+  server: string
+  ast: any
+}
+
+export async function sourceToIslands(
+  sourcePath: string,
+  clientDir: string,
+  options: Options
+): Promise<SourceToIslands> {
+  let ast
+
+  try {
+    const stat = await fs.stat(sourcePath)
+    if (!stat.isFile())
+      throw new Error(
+        `${PREFIX} Invalid Source, the provided source was not a valid filepath: ${sourcePath}`
+      )
+    const source = await fs.readFile(sourcePath, 'utf8')
+    ast = await sourceToAST(source)
+  } catch (err) {
+    throw new Error(
+      `${PREFIX} Invalid Source, the provided source failed to parse: ${sourcePath}`
+    )
+  }
 
   const funcName = await getDefaultExportName(ast, sourcePath)
   const client = buildIslandClient(funcName, sourcePath)
-  const server = buildIslandServer(funcName, ast, sourcePath, options)
+  const server = buildIslandServer(
+    funcName,
+    ast,
+    sourcePath,
+    clientDir,
+    options
+  )
 
-  return { client, server }
+  return { client, server, ast }
 }
 
 async function getDefaultExportName(ast: any, filePath: string) {
@@ -46,7 +82,7 @@ async function getDefaultExportName(ast: any, filePath: string) {
         funcName = func.id.name
       } else {
         throw new Error(
-          `[island-loader] ${filePath} doesn't export a named default`
+          `${PREFIX} Unsupported Component: ${filePath} doesn't export a default function / component`
         )
       }
       break
@@ -61,8 +97,9 @@ export function buildIslandClient(name: string, importPath: string) {
   
 customElements.define("${islandName}", class Island${name} extends HTMLElement { 
   async connectedCallback() {
-      const c =await import(${JSON.stringify(importPath)}); 
-      const props = JSON.parse(this.dataset.props || '{}'); hydrate(h(c.default, props), this);
+      const c = await import(${JSON.stringify(importPath)}); 
+      const props = JSON.parse(this.dataset.props || '{}'); 
+      hydrate(h(c.default, props), this);
   } 
 })`
 }
@@ -71,6 +108,7 @@ function buildIslandServer(
   funcName: string,
   ast: any,
   sourcePath: string,
+  clientDir: string,
   options: Options
 ) {
   let hasPreactImport = false,
@@ -116,7 +154,7 @@ function buildIslandServer(
   if (!hasFragImport) ast.program.body.unshift(PREACT_IMPORT_FRAG_AST)
 
   ast.program.body.push(
-    modifyASTForIslandWrapper(funcName, sourcePath, options)
+    modifyASTForIslandWrapper(funcName, sourcePath, clientDir, options)
   )
   return generate(ast).code
 }
@@ -128,6 +166,7 @@ function getIslandName(name: string): string {
 export function modifyASTForIslandWrapper(
   name: string,
   sourcePath: string,
+  clientDir: string,
   options: Options
 ) {
   const islandName = getIslandName(name)
@@ -139,7 +178,10 @@ export function modifyASTForIslandWrapper(
     export default function Island${name}(props) {
       return h(Fragment,{},
         h("${islandName}",{ "data-props": JSON.stringify(props) },h(${name}, props)),
-        h("script",{async:true, src:"/public/js/${scriptBaseName}", type:"module"}),
+        h("script",{async:true, src:"${path.join(
+          clientDir,
+          scriptBaseName
+        )}", type:"module"}),
       )
     }
   `
@@ -149,9 +191,13 @@ export function modifyASTForIslandWrapper(
       return h(
         Fragment,
         {},
-        h("${islandName}",{
-          props:JSON.stringify(props)
-        })
+        h(
+          "${islandName}",
+          {
+            "data-props":JSON.stringify(props)
+          }, 
+          h(${name},props)
+        )
       )
     }
   `

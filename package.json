@@ -17,6 +17,11 @@
       "require": "./esbuild.cjs",
       "import": "./esbuild.js"
     },
+    "./rollup": {
+      "types": "./rollup.d.ts",
+      "require": "./rollup.cjs",
+      "import": "./rollup.js"
+    },
     "./*": "./*"
   },
   "typesVersions": {
@@ -33,8 +38,9 @@
   },
   "scripts": {
     "build": "tsup",
-    "build:post": "esno scripts/postbuild.ts",
-    "dev": "tsup --watch src"
+    "build:post": "node scripts/postbuild.js",
+    "dev": "tsup --watch src",
+    "fix": "npx prettier --write ."
   },
   "prettier": "@barelyhuman/prettier-config",
   "dependencies": {
@@ -44,11 +50,14 @@
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",
     "@types/node": "^18.14.0",
-    "esno": "^0.16.3",
+    "fast-glob": "^3.2.12",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
-    "tiny-glob": "^0.2.9",
     "tsup": "^6.6.3",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vite": "^4.1.0"
+  },
+  "peerDependencies": {
+    "vite": "^4.1.0"
   }
 }

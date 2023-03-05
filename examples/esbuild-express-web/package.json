@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
+    "esbuild": "^0.17.10",
     "esbuild-node-externals": "^1.6.0",
     "tiny-glob": "^0.2.9",
     "watcher": "^2.2.2"
