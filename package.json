@@ -40,7 +40,8 @@
     "build": "tsup",
     "build:post": "node scripts/postbuild.js",
     "dev": "tsup --watch src",
-    "fix": "npx prettier --write ."
+    "fix": "npx prettier --write .",
+    "next": "bumpp"
   },
   "prettier": "@barelyhuman/prettier-config",
   "dependencies": {
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",
     "@types/node": "^18.14.0",
+    "bumpp": "^9.0.0",
     "fast-glob": "^3.2.12",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
