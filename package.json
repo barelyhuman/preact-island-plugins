@@ -4,8 +4,13 @@
   "license": "MIT",
   "type": "module",
   "main": "index.cjs",
+  "repository": "barelyhuman/preact-island-plugins",
+  "author": "reaper <ahoy@barelyhuman.dev>",
   "module": "index.js",
   "types": "index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./index.d.ts",
