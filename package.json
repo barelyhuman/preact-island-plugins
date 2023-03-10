@@ -41,7 +41,8 @@
     "build:post": "node scripts/postbuild.js",
     "dev": "tsup --watch src",
     "fix": "npx prettier --write .",
-    "next": "bumpp"
+    "next": "bumpp",
+    "test": "echo 'done'"
   },
   "prettier": "@barelyhuman/prettier-config",
   "dependencies": {
