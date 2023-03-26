@@ -11,7 +11,7 @@ export default function preactIslandPlugin({
   return {
     name: 'preact-island-plugin',
     async setup(build: any) {
-      build.onLoad({ filter: /\.island\.jsx?$/ }, async (args: any) => {
+      build.onLoad({ filter: /\.island\.(js|ts)x?$/ }, async (args: any) => {
         const ogFilePath = args.path
 
         const { server, client } = await sourceToIslands(
@@ -24,7 +24,10 @@ export default function preactIslandPlugin({
 
         const genPath = await createGeneratedDir({ cwd })
         const fileName = path.basename(ogFilePath)
-        const fpath = path.join(genPath, fileName.replace('.js', '.client.js'))
+
+        const normalizedName = fileName.replace(/\.(ts|js)x?$/, '.client.js')
+
+        const fpath = path.join(genPath, normalizedName)
         await fs.writeFile(fpath, client, 'utf8')
 
         return {

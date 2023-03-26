@@ -3,6 +3,11 @@ import _generate from '@babel/generator'
 
 import { parse as jsxParser } from '@babel/parser'
 
+import babel from '@babel/core'
+
+//@ts-expect-error no source types
+import tsPreset from '@babel/preset-typescript'
+
 import fs from 'fs/promises'
 import path from 'path'
 
@@ -19,7 +24,18 @@ export type Options = {
 }
 
 async function sourceToAST(sourceCode: string) {
-  return jsxParser(sourceCode, {
+  const transformed = babel.transformSync(sourceCode, {
+    presets: [
+      [
+        tsPreset,
+        {
+          allExtensions: true,
+          isTSX: true,
+        },
+      ],
+    ],
+  })
+  return jsxParser(transformed.code, {
     sourceType: 'module',
     plugins: ['jsx'],
   })
@@ -170,7 +186,7 @@ export function modifyASTForIslandWrapper(
   options: Options
 ) {
   const islandName = getIslandName(name)
-  const scriptName = sourcePath.trim().replace(/.js$/, '.client.js')
+  const scriptName = sourcePath.trim().replace(/.(js|ts)x?$/, '.client.js')
   const scriptBaseName = path.basename(scriptName)
   let code
   if (options.atomic) {
