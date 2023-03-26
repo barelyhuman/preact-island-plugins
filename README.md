@@ -15,7 +15,7 @@ The output can then be used in either `atomic` or non-atomic manner to serve a
 MPA style website.
 
 Since each bundler has a different way of setting itself up, please refer to the
-[`examples`](/examples/) directory for a setup that you might wanna use.
+[ `examples` ](/examples/) directory for a setup that you might wanna use.
 
 We recommend the **esbuild** one as it's the simplest one out of the bunch.
 
@@ -31,6 +31,7 @@ create similar islands for other web libraries.
 
 - [x] Support JS
 - [ ] Support TS
+  - [x] esbuild
 - [ ] Bundlers
   - [ ] Webpack
   - [x] esbuild
