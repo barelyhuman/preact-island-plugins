@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { Options } from './lib/common.js'
-import { defaultModifier, sourceDataToIslands, sourceToIslands } from './lib/island.js'
+import { defaultModifier, sourceDataToIslands } from './lib/island.js'
 import { toHash } from './lib/to-hash.js'
 
 interface EsbuildOptions extends Options {

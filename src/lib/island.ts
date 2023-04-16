@@ -142,8 +142,10 @@ function buildIslandServer(
         hasFragImport = true
     }
   })
+
   if (!hasHImport) ast.program.body.unshift(PREACT_IMPORT_AST)
   if (!hasFragImport) ast.program.body.unshift(PREACT_IMPORT_FRAG_AST)
+
   ast.program.body.push(
     modifyASTForIslandWrapper(funcName, sourcePath, clientDir, options)
   )
