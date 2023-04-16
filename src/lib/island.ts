@@ -1,19 +1,8 @@
-// @ts-expect-error no-types
-import _generate from '@babel/generator'
-
-import { parse as jsxParser } from '@babel/parser'
-
-import babel from '@babel/core'
-
-//@ts-expect-error no source types
-import tsPreset from '@babel/preset-typescript'
-
 import fs from 'fs/promises'
 import path from 'path'
+import { astFromCode, codeFromAST, sourceToAST } from './ast'
 
 const PREFIX = '[preact-island]'
-
-const generate = _generate.default
 
 const PREACT_IMPORT_FRAG_AST = astFromCode(`import {Fragment} from "preact";`)
 
@@ -21,24 +10,7 @@ const PREACT_IMPORT_AST = astFromCode(`import {h} from "preact";`)
 
 export type Options = {
   atomic: boolean
-}
-
-async function sourceToAST(sourceCode: string) {
-  const transformed = babel.transformSync(sourceCode, {
-    presets: [
-      [
-        tsPreset,
-        {
-          allExtensions: true,
-          isTSX: true,
-        },
-      ],
-    ],
-  })
-  return jsxParser(transformed.code, {
-    sourceType: 'module',
-    plugins: ['jsx'],
-  })
+  nameModifier?: (name: string) => string
 }
 
 type SourceToIslands = {
@@ -77,7 +49,6 @@ export async function sourceToIslands(
     clientDir,
     options
   )
-
   return { client, server, ast }
 }
 
@@ -165,18 +136,20 @@ function buildIslandServer(
         hasFragImport = true
     }
   })
-
   if (!hasHImport) ast.program.body.unshift(PREACT_IMPORT_AST)
   if (!hasFragImport) ast.program.body.unshift(PREACT_IMPORT_FRAG_AST)
-
   ast.program.body.push(
     modifyASTForIslandWrapper(funcName, sourcePath, clientDir, options)
   )
-  return generate(ast).code
+  return codeFromAST(ast)
 }
 
 function getIslandName(name: string): string {
   return `island${name.replace(/([A-Z])/g, '-$1').toLowerCase()}`
+}
+
+export function defaultModifier(name: string) {
+  return name.trim().replace(/.(js|ts)x?$/, '.client.js')
 }
 
 export function modifyASTForIslandWrapper(
@@ -185,8 +158,9 @@ export function modifyASTForIslandWrapper(
   clientDir: string,
   options: Options
 ) {
+  options.nameModifier = options.nameModifier || defaultModifier
   const islandName = getIslandName(name)
-  const scriptName = sourcePath.trim().replace(/.(js|ts)x?$/, '.client.js')
+  const scriptName = options.nameModifier(sourcePath)
   const scriptBaseName = path.basename(scriptName)
   let code
   if (options.atomic) {
@@ -218,13 +192,6 @@ export function modifyASTForIslandWrapper(
     }
   `
   }
+
   return astFromCode(code)
-}
-
-function astFromCode(code: string): any {
-  const ast = jsxParser(code, {
-    sourceType: 'module',
-  })
-
-  return ast.program.body[0]
 }
