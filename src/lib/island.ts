@@ -23,9 +23,7 @@ export async function sourceToIslands(
   sourcePath: string,
   clientDir: string,
   options: Options
-): Promise<SourceToIslands> {
-  let ast
-
+) {
   try {
     const stat = await fs.stat(sourcePath)
     if (!stat.isFile())
@@ -33,13 +31,21 @@ export async function sourceToIslands(
         `${PREFIX} Invalid Source, the provided source was not a valid filepath: ${sourcePath}`
       )
     const source = await fs.readFile(sourcePath, 'utf8')
-    ast = await sourceToAST(source)
+    return sourceDataToIslands(source, sourcePath, clientDir, options)
   } catch (err) {
     throw new Error(
       `${PREFIX} Invalid Source, the provided source failed to parse: ${sourcePath}`
     )
   }
+}
 
+export async function sourceDataToIslands(
+  sourceCode: string,
+  sourcePath: string,
+  clientDir: string,
+  options: Options
+): Promise<SourceToIslands> {
+  const ast = await sourceToAST(sourceCode)
   const funcName = await getDefaultExportName(ast, sourcePath)
   const client = buildIslandClient(funcName, sourcePath)
   const server = buildIslandServer(
