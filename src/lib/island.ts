@@ -109,28 +109,36 @@ async function getDefaultExportName(ast: any, filePath: string) {
 
 export function buildIslandClient(name: string, importPath: string) {
   const islandName = getIslandName(name)
-  return `import { h, hydrate } from 'preact'; 
+  return `
+import { h, hydrate } from 'preact'; 
   
-  const restoreTree = (type, props, children) => {
+  
+const restoreTree = (type, props) => {
+  if (typeof props.children === 'object') {
+    if (Array.isArray(props.children)) {
+      return h(
+        type,
+        props,
+        ...props.children.map(x => {
+          return restoreTree(x.type, x.props)
+        })
+      )
+    }
     return h(
       type,
       props,
-      ...(children || []).map(x => restoreTree(x.type, x.props,x.children))
+      restoreTree(props.children.type || '', props.children.props || {})
     )
   }
+
+  return h(type, props)
+}
 
 customElements.define("${islandName}", class Island${name} extends HTMLElement { 
   async connectedCallback() {
       const c = await import(${JSON.stringify(importPath)}); 
       const props = JSON.parse(this.dataset.props  || '{}'); 
-      hydrate(
-        restoreTree(
-          c.default,
-          props,
-          props.children
-        ),
-        this
-      )
+      hydrate(restoreTree(c.default, props, props.children || []), this)
   } 
 })`
 }
