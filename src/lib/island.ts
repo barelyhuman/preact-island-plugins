@@ -111,11 +111,26 @@ export function buildIslandClient(name: string, importPath: string) {
   const islandName = getIslandName(name)
   return `import { h, hydrate } from 'preact'; 
   
+  const restoreTree = (type, props, children) => {
+    return h(
+      type,
+      props,
+      ...(children || []).map(x => restoreTree(x.type, x.props,x.children))
+    )
+  }
+
 customElements.define("${islandName}", class Island${name} extends HTMLElement { 
   async connectedCallback() {
       const c = await import(${JSON.stringify(importPath)}); 
-      const props = JSON.parse(this.dataset.props || '{}'); 
-      hydrate(h(c.default, props), this);
+      const props = JSON.parse(this.dataset.props  || '{}'); 
+      hydrate(
+        restoreTree(
+          c.default,
+          props,
+          props.children
+        ),
+        this
+      )
   } 
 })`
 }
