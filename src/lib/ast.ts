@@ -16,7 +16,6 @@ export function astFromCode(code: string): any {
 //@ts-expect-error type defs
 export const codeFromAST = ast => {
   const code = generate(ast).code
-  console.log({ code })
   return code
 }
 
