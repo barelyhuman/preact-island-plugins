@@ -84,7 +84,7 @@ export function buildIslandClient(name: string, importPath: string) {
 import { h, hydrate } from 'preact'; 
   
   
-const restoreTree = (type, props) => {
+const restoreTree = (type, props={}) => {
   if (typeof props.children === 'object') {
     if (Array.isArray(props.children)) {
       return h(
