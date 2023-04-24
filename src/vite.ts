@@ -5,7 +5,7 @@ import { sourceToIslands } from './lib/island'
 import { transformWithEsbuild, Plugin } from 'vite'
 
 export default function preactIslandPlugin(
-  { atomic = false, cwd = '.', clientDir = '' }: Options = <Options>{}
+  { atomic = false, cwd = '.', baseURL = '' }: Options = <Options>{}
 ): Plugin {
   return {
     name: 'preact-island-plugin',
@@ -14,7 +14,7 @@ export default function preactIslandPlugin(
         return null
       }
 
-      const { server, client } = await sourceToIslands(id, clientDir, {
+      const { server, client } = await sourceToIslands(id, baseURL, {
         atomic,
       })
 

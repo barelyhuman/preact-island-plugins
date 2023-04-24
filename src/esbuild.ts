@@ -11,7 +11,7 @@ interface EsbuildOptions extends Options {
 export default function preactIslandPlugin({
   cwd,
   atomic,
-  clientDir: clientDir,
+  baseURL,
   hash,
 }: EsbuildOptions) {
   return {
@@ -33,7 +33,7 @@ export default function preactIslandPlugin({
         const { server, client } = await sourceDataToIslands(
           source,
           ogFilePath,
-          clientDir,
+          baseURL,
           {
             atomic: atomic || false,
             nameModifier,

@@ -21,7 +21,7 @@ type SourceToIslands = {
 
 export async function sourceToIslands(
   sourcePath: string,
-  clientDir: string,
+  baseURL: string,
   options: Options
 ) {
   try {
@@ -31,7 +31,7 @@ export async function sourceToIslands(
         `${PREFIX} Invalid Source, the provided source was not a valid filepath: ${sourcePath}`
       )
     const source = await fs.readFile(sourcePath, 'utf8')
-    return sourceDataToIslands(source, sourcePath, clientDir, options)
+    return sourceDataToIslands(source, sourcePath, baseURL, options)
   } catch (err) {
     throw new Error(
       `${PREFIX} Invalid Source, the provided source failed to parse: ${sourcePath}`
@@ -42,19 +42,13 @@ export async function sourceToIslands(
 export async function sourceDataToIslands(
   sourceCode: string,
   sourcePath: string,
-  clientDir: string,
+  baseURL: string,
   options: Options
 ): Promise<SourceToIslands> {
   const ast = await sourceToAST(sourceCode)
   const funcName = await getDefaultExportName(ast, sourcePath)
   const client = buildIslandClient(funcName, sourcePath)
-  const server = buildIslandServer(
-    funcName,
-    ast,
-    sourcePath,
-    clientDir,
-    options
-  )
+  const server = buildIslandServer(funcName, ast, sourcePath, baseURL, options)
   return { client, server, ast }
 }
 
@@ -101,7 +95,7 @@ function buildIslandServer(
   funcName: string,
   ast: any,
   sourcePath: string,
-  clientDir: string,
+  baseURL: string,
   options: Options
 ) {
   let hasPreactImport = false,
@@ -147,7 +141,7 @@ function buildIslandServer(
   if (!hasFragImport) ast.program.body.unshift(PREACT_IMPORT_FRAG_AST)
 
   ast.program.body.push(
-    modifyASTForIslandWrapper(funcName, sourcePath, clientDir, options)
+    modifyASTForIslandWrapper(funcName, sourcePath, baseURL, options)
   )
   return codeFromAST(ast)
 }
@@ -163,7 +157,7 @@ export function defaultModifier(name: string) {
 export function modifyASTForIslandWrapper(
   name: string,
   sourcePath: string,
-  clientDir: string,
+  baseURL: string,
   options: Options
 ) {
   options.nameModifier = options.nameModifier || defaultModifier
@@ -177,7 +171,7 @@ export function modifyASTForIslandWrapper(
       return h(Fragment,{},
         h("${islandName}",{ "data-props": JSON.stringify(props) },h(${name}, props)),
         h("script",{async:true, src:"${path.join(
-          clientDir,
+          baseURL,
           scriptBaseName
         )}", type:"module"}),
       )

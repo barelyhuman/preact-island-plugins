@@ -6,7 +6,7 @@ import { sourceToIslands } from './lib/island'
 export default function preactIslandPlugin({
   atomic = false,
   cwd = '.',
-  clientDir = '',
+  baseURL = '',
 }: Options) {
   return {
     name: 'preact-island-plugin',
@@ -15,7 +15,7 @@ export default function preactIslandPlugin({
         return null
       }
 
-      const { server, client } = await sourceToIslands(id, clientDir, {
+      const { server, client } = await sourceToIslands(id, baseURL, {
         atomic,
       })
 
