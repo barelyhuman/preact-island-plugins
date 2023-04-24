@@ -3,11 +3,15 @@ import path from 'path'
 import { Options } from './lib/common'
 import { sourceToIslands } from './lib/island'
 
+import { defaultModifier, sourceDataToIslands } from './lib/island.js'
+import { toHash } from './lib/to-hash.js'
+
 export default function preactIslandPlugin({
   atomic = false,
   cwd = '.',
   baseURL = '',
-}: Options) {
+  hash=false
+}:Options) {
   return {
     name: 'preact-island-plugin',
     async transform(_: any, id: string) {
@@ -15,8 +19,19 @@ export default function preactIslandPlugin({
         return null
       }
 
+
+        const source = await fs.readFile(id, 'utf8')
+        const hashedName = toHash(source)
+
+        let nameModifier = defaultModifier
+
+        if (hash) {
+          nameModifier = (name: string) =>
+            name.trim().replace(/.(js|ts)x?$/, `.client-${hashedName}.js`)
+        }
       const { server, client } = await sourceToIslands(id, baseURL, {
         atomic,
+	nameModifier
       })
 
       const genPath = await createGeneratedDir({ cwd })

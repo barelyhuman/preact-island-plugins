@@ -17,6 +17,7 @@ function getServerConfig() {
         clientDir: '/public/js',
         atomic: true,
         cwd: '.',
+	hash:true
       }),
       babel(),
     ],

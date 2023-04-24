@@ -4,16 +4,13 @@ import { Options } from './lib/common.js'
 import { defaultModifier, sourceDataToIslands } from './lib/island.js'
 import { toHash } from './lib/to-hash.js'
 
-interface EsbuildOptions extends Options {
-  hash?: boolean
-}
 
 export default function preactIslandPlugin({
   cwd,
   atomic,
   baseURL,
   hash,
-}: EsbuildOptions) {
+}: Options) {
   return {
     name: 'preact-island-plugin',
     async setup(build: any) {
