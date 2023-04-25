@@ -4,7 +4,7 @@ import fs from 'fs/promises'
 import glob from 'tiny-glob'
 import * as url from 'url'
 import Watcher from 'watcher'
-import preactIslandPlugin from '../../dist/esbuild.js'
+import preactIslandPlugin from '@barelyhuman/preact-island-plugins/esbuild'
 
 const watch = process.argv.slice(2).includes('-w')
 

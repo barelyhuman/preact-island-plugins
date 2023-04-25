@@ -4,7 +4,6 @@ import { Options } from './lib/common.js'
 import { defaultModifier, sourceDataToIslands } from './lib/island.js'
 import { toHash } from './lib/to-hash.js'
 
-
 export default function preactIslandPlugin({
   cwd,
   atomic,
