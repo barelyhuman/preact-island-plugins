@@ -35,6 +35,9 @@ async function sourceToAST(sourceCode: string) {
       ],
     ],
   })
+  if (!transformed) {
+    throw new Error('failed to transform code')
+  }
   return jsxParser(transformed.code, {
     sourceType: 'module',
     plugins: ['jsx'],
@@ -168,6 +171,14 @@ function buildIslandServer(
       }
     }
     if (child.type === 'ImportDeclaration') {
+      if (
+        child.source.type === 'StringLiteral' &&
+        child.source.value.match(/.island\.?(jsx?|tsx?)?$/)
+      ) {
+        throw new Error(
+          `Importing Island inside another island, isn't supported yet, imported ${child.source.value} in ${sourcePath}`
+        )
+      }
       if (
         child.source.type === 'StringLiteral' &&
         child.source.value === 'preact'
