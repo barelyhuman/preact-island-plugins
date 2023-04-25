@@ -10,8 +10,8 @@ export default function preactIslandPlugin({
   atomic = false,
   cwd = '.',
   baseURL = '',
-  hash=false
-}:Options) {
+  hash = false,
+}: Options) {
   return {
     name: 'preact-island-plugin',
     async transform(_: any, id: string) {
@@ -19,20 +19,24 @@ export default function preactIslandPlugin({
         return null
       }
 
+      const source = await fs.readFile(id, 'utf8')
+      const hashedName = toHash(source)
 
-        const source = await fs.readFile(id, 'utf8')
-        const hashedName = toHash(source)
+      let nameModifier = defaultModifier
 
-        let nameModifier = defaultModifier
-
-        if (hash) {
-          nameModifier = (name: string) =>
-            name.trim().replace(/.(js|ts)x?$/, `.client-${hashedName}.js`)
+      if (hash) {
+        nameModifier = (name: string) =>
+          name.trim().replace(/.(js|ts)x?$/, `.client-${hashedName}.js`)
+      }
+      const { server, client } = await sourceDataToIslands(
+        source,
+        id,
+        baseURL,
+        {
+          atomic,
+          nameModifier,
         }
-      const { server, client } = await sourceToIslands(id, baseURL, {
-        atomic,
-	nameModifier
-      })
+      )
 
       const genPath = await createGeneratedDir({ cwd })
       const fileName = path.basename(id).replace('.js', '.client.js')

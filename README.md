@@ -27,10 +27,10 @@ reduce for you, refer to the original DIY repo for preact islands.
 While these are built for preact, the plugin(s) can be forked to replace and
 create similar islands for other web libraries.
 
-## Current Limitations 
+## Current Limitations
 
-- An island cannot render another island. 
-  Workaround: You can move the islands up to server rendered component and combine them there instead.
+- An island cannot render another island. Workaround: You can move the islands
+  up to server rendered component and combine them there instead.
 
 # Goals
 
