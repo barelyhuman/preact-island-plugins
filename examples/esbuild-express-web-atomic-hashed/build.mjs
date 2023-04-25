@@ -6,6 +6,7 @@ import * as url from 'url'
 import Watcher from 'watcher'
 import preactIslandPlugin from '../../dist/esbuild.js'
 
+const atomic = true
 const watch = process.argv.slice(2).includes('-w')
 
 const commonConfig = {
@@ -20,22 +21,14 @@ const commonConfig = {
   jsxImportSource: 'preact',
 }
 
-const generateManifest = async () => {
-  const entryPoints = await glob('./**/*.client.js', {
-    absolute: false,
+const client = async () => {
+  const entryPoints = await glob('./**/*.client-*.js', {
+    absolute: true,
     cwd: './.generated',
   })
-  await fs.writeFile(
-    './.generated/client.js',
-    entryPoints.map(x => `import "./${x}";`).join('\n'),
-    'utf8'
-  )
-}
-
-const client = async () => {
   esbuild.build({
     ...commonConfig,
-    entryPoints: ['./.generated/client.js'],
+    entryPoints: entryPoints,
     minify: true,
     splitting: true,
     // because of this, it's right now limited to esm
@@ -55,6 +48,8 @@ const server = () =>
       nodeExternalsPlugin(),
       preactIslandPlugin({
         baseURL: '/public/js',
+        atomic,
+        hash: true,
         cwd: url.fileURLToPath(new URL('.', import.meta.url)),
       }),
     ],
@@ -63,7 +58,6 @@ const server = () =>
 
 async function main() {
   await server()
-  await generateManifest()
   await client()
 }
 

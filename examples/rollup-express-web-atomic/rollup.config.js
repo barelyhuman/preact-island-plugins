@@ -14,9 +14,10 @@ function getServerConfig() {
     plugins: [
       nodeResolve(),
       preactIslandPlugin({
-        clientDir: '/public/js',
+        baseURL: '/public/js',
         atomic: true,
         cwd: '.',
+        hash: true,
       }),
       babel(),
     ],

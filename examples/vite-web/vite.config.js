@@ -6,11 +6,12 @@ export default config => {
     build: {
       minify: false,
     },
-    optimizeDeps: { extension: ['.jsx'] },
     plugins: [
       preactIslandsPlugin({
         atomic: false,
+        // baseURL: "./src",
         cwd: __dirname,
+        // hash:true,
       }),
       preact(),
     ],

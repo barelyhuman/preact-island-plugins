@@ -1,5 +1,7 @@
 export type Options = {
   cwd: string
+  baseURL: string
   atomic?: boolean
-  clientDir: string
+hash?: boolean
 }
+

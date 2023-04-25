@@ -6,7 +6,7 @@ async function createServer(isProd = process.env.NODE_ENV === 'production') {
 
   const vite = await createViteServer({
     server: { middlewareMode: true },
-    appType: 'custom',
+    appType: 'mpa',
   })
 
   try {
