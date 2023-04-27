@@ -5,21 +5,25 @@
   "license": "MIT",
   "author": "reaper <ahoy@barelyhuman.dev>",
   "type": "module",
+  "files": [
+    "src",
+    "dist"
+  ],
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "require": "./index.cjs",
-      "import": "./index.js"
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
     },
     "./esbuild": {
-      "types": "./esbuild.d.ts",
-      "require": "./esbuild.cjs",
-      "import": "./esbuild.js"
+      "types": "./dist/esbuild.d.ts",
+      "require": "./dist/esbuild.cjs",
+      "import": "./dist/esbuild.js"
     },
     "./rollup": {
-      "types": "./rollup.d.ts",
-      "require": "./rollup.cjs",
-      "import": "./rollup.js"
+      "types": "./dist/rollup.d.ts",
+      "require": "./dist/rollup.cjs",
+      "import": "./dist/rollup.js"
     },
     "./*": "./*"
   },
