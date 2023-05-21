@@ -1,22 +1,27 @@
-import fs from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import path, { resolve } from 'path'
 import { h } from 'preact'
-import { renderToString } from 'preact-render-to-string'
-import HomePage from './components/HomePage'
+import preactRenderToString from 'preact-render-to-string'
+import routes from './routes.js'
 
-const isProd = process.env.NODE_ENV === 'production'
+export function setup(router, vite, baseHTML) {
+  router.use((req, res, next) => {
+    const url = req.originalUrl
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const template = isProd
-  ? fs.readFileSync(resolve(__dirname, '../client/index.html'), 'utf8')
-  : fs.readFileSync(resolve(__dirname, '../index.html'), 'utf8')
-
-export function setup(app, router, vite) {
-  router.get('/', async (req, res) => {
-    const appHTML = renderToString(h(HomePage))
-    const html = template.replace(`<!--app-outlet-->`, appHTML)
-    res.end(html)
-    return
+    res.renderWithPreact = async (Component, props) => {
+      try {
+        let html = preactRenderToString(h(Component, { ...props }))
+        let template = baseHTML
+        template =
+          (vite && (await vite.transformIndexHtml(url, template))) || template
+        html = template.replace(`<!--ssr-outlet-->`, html)
+        return res.status(200).set('Content-Type', 'text/html').end(html)
+      } catch (err) {
+        vite && vite.ssrFixStacktrace(err)
+        console.error(e.stack)
+        res.status(500).end(e.stack)
+      }
+    }
+    next()
   })
+
+  routes(router)
 }

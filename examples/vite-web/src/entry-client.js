@@ -1,8 +1,9 @@
-const modules = import.meta.glob('../.generated/*.client.js')
+const components = await import.meta.glob('../.generated/*.client.jsx')
 
-Object.keys(modules).forEach(async k => {
-  await import(
-    /* @vite-ignore */
-    k
-  )
+Object.keys(components).forEach(async k => {
+  components[k]()
+  // await import(
+  //   /* @vite-ignore */
+  //   k
+  // );
 })
