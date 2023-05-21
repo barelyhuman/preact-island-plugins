@@ -81,9 +81,9 @@ async function getDefaultExportName(ast: any, filePath: string) {
 export function buildIslandClient(name: string, importPath: string) {
   const islandName = getIslandName(name)
   return `
-import { h, hydrate } from 'preact'; 
-  
-  
+import { render, h } from 'preact';
+
+
 const restoreTree = (type, props={}) => {
   if (typeof props.children === 'object') {
     if (Array.isArray(props.children)) {
@@ -121,7 +121,7 @@ function mergePropsWithDOM(rootNode, props) {
       let _prop = propPoint
       if(Array.isArray(propPoint) && propPoint[index]){
         _prop = propPoint[index]
-      } 
+      }
       if(/^island-(.*)+/.test(child.localName)){
         _prop.type = child.localName
         if(_prop.props){
@@ -141,12 +141,12 @@ function mergePropsWithDOM(rootNode, props) {
   rootNode.append(...scriptNodes)
 }
 
-customElements.define("${islandName}", class Island${name} extends HTMLElement { 
+customElements.define("${islandName}", class Island${name} extends HTMLElement {
   async connectedCallback() {
-      const c = await import(${JSON.stringify(importPath)}); 
-      const props = JSON.parse(this.dataset.props  || '{}'); 
+      const c = await import(${JSON.stringify(importPath)});
+      const props = JSON.parse(this.dataset.props  || '{}');
       mergePropsWithDOM(this,props);
-      hydrate(restoreTree(c.default, props), this)
+      render(restoreTree(c.default, props), this, this)
   }
 })`
 }
@@ -191,7 +191,7 @@ function buildIslandServer(
       if (
         hasPreactImport &&
         child.specifiers.findIndex((x: any) => x.imported.name === 'Fragment') >
-          -1
+        -1
       )
         hasFragImport = true
     }
@@ -231,9 +231,9 @@ export function modifyASTForIslandWrapper(
       return h(Fragment,{},
         h("${islandName}",{ "data-props": JSON.stringify(props) },h(${name}, props)),
         h("script",{async:true, src:"${path.join(
-          baseURL,
-          scriptBaseName
-        )}", type:"module"}),
+      baseURL,
+      scriptBaseName
+    )}", type:"module"}),
       )
     }
   `
@@ -247,7 +247,7 @@ export function modifyASTForIslandWrapper(
           "${islandName}",
           {
             "data-props":JSON.stringify(props)
-          }, 
+          },
           h(${name},props)
         )
       )
