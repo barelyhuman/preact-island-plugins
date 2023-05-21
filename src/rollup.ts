@@ -15,11 +15,21 @@ export default function preactIslandPlugin({
   return {
     name: 'preact-island-plugin',
     async transform(_: any, id: string) {
-      if (!/\.island\.jsx?$/.test(id)) {
-        return null
+      const source = await fs.readFile(id, 'utf8')
+      let isIsland = false
+
+      if (/\.island\.(jsx?|tsx?)?$/.test(id)) {
+        isIsland = true
+      } else {
+        if (/\/\/[ ]*[@]{1}island?$/gim.test(source)) {
+          isIsland = true
+        }
       }
 
-      const source = await fs.readFile(id, 'utf8')
+      if (!isIsland) {
+        return
+      }
+
       const hashedName = toHash(source)
 
       let nameModifier = defaultModifier

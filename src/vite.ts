@@ -24,7 +24,6 @@ export default function preactIslandPlugin(
     async transform(_: any, id: string) {
       const source = await fs.readFile(id, 'utf8')
       let isIsland = false
-      const hashedName = toHash(source)
 
       if (/\.island\.(jsx?|tsx?)?$/.test(id)) {
         isIsland = true
@@ -38,6 +37,7 @@ export default function preactIslandPlugin(
         return
       }
 
+      const hashedName = toHash(source)
       let nameModifier = defaultModifier
 
       if (hash) {
