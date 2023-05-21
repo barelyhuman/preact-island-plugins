@@ -1,7 +1,9 @@
-import Counter from "./Counter.jsx"
+import Counter from './Counter.jsx'
 
-export function HomePage(){
-  return <>
-    <Counter />
-  </>
+export function HomePage() {
+  return (
+    <>
+      <Counter />
+    </>
+  )
 }

@@ -1,7 +1,7 @@
 import Counter from './Counter.island.js'
 import Todo from './Todo.js'
 
-export default function() {
+export default function () {
   const initData = { initValue: 10 }
   return (
     <>

@@ -191,7 +191,7 @@ function buildIslandServer(
       if (
         hasPreactImport &&
         child.specifiers.findIndex((x: any) => x.imported.name === 'Fragment') >
-        -1
+          -1
       )
         hasFragImport = true
     }
@@ -231,9 +231,9 @@ export function modifyASTForIslandWrapper(
       return h(Fragment,{},
         h("${islandName}",{ "data-props": JSON.stringify(props) },h(${name}, props)),
         h("script",{async:true, src:"${path.join(
-      baseURL,
-      scriptBaseName
-    )}", type:"module"}),
+          baseURL,
+          scriptBaseName
+        )}", type:"module"}),
       )
     }
   `

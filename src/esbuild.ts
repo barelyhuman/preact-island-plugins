@@ -15,7 +15,7 @@ export default function preactIslandPlugin({
     async setup(build: any) {
       build.onLoad({ filter: /\.(js|ts)x?$/ }, async (args: any) => {
         const ogFilePath = args.path
-        let isIsland = false;
+        let isIsland = false
 
         // FIXME: reading the entire source would be useless,
         // just get the first few lines to see if it exists.
@@ -24,7 +24,7 @@ export default function preactIslandPlugin({
         if (/\.island\.(js|ts)x?$/.test(ogFilePath)) {
           isIsland = true
         } else {
-          if (/\/\/[ ]*[@]{1}island?$/gmi.test(source)) {
+          if (/\/\/[ ]*[@]{1}island?$/gim.test(source)) {
             isIsland = true
           }
         }
