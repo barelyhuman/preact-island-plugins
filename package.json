@@ -25,6 +25,11 @@
       "require": "./dist/rollup.cjs",
       "import": "./dist/rollup.js"
     },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "require": "./dist/vite.cjs",
+      "import": "./dist/vite.js"
+    },
     "./*": "./*"
   },
   "scripts": {

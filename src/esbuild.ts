@@ -29,8 +29,6 @@ export default function preactIslandPlugin({
           }
         }
 
-        console.log({ ogFilePath, isIsland });
-
         if (!isIsland) {
           return
         }
