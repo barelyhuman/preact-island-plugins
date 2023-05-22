@@ -1,19 +1,17 @@
+import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
-import preactIslandsPlugin from '../../dist/vite'
+import preactIslandVite from '@barelyhuman/preact-island-plugins/vite'
 
-export default config => {
-  return {
-    build: {
-      minify: false,
-    },
-    plugins: [
-      preactIslandsPlugin({
-        atomic: false,
-        // baseURL: "./src",
-        cwd: __dirname,
-        // hash:true,
-      }),
-      preact(),
-    ],
-  }
-}
+// https://vitejs.dev/config/
+export default defineConfig({
+  build: {
+    target: 'esnext',
+  },
+  plugins: [
+    preact(),
+    preactIslandVite({
+      atomic: false,
+      hash: false,
+    }),
+  ],
+})

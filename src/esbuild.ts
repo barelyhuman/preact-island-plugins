@@ -13,12 +13,27 @@ export default function preactIslandPlugin({
   return {
     name: 'preact-island-plugin',
     async setup(build: any) {
-      build.onLoad({ filter: /\.island\.(js|ts)x?$/ }, async (args: any) => {
+      build.onLoad({ filter: /\.(js|ts)x?$/ }, async (args: any) => {
         const ogFilePath = args.path
+        let isIsland = false
 
+        // FIXME: reading the entire source would be useless,
+        // just get the first few lines to see if it exists.
         const source = await fs.readFile(ogFilePath, 'utf8')
-        const hashedName = toHash(source)
 
+        if (/\.island\.(js|ts)x?$/.test(ogFilePath)) {
+          isIsland = true
+        } else {
+          if (/\/\/[ ]*[@]{1}island?$/gim.test(source)) {
+            isIsland = true
+          }
+        }
+
+        if (!isIsland) {
+          return
+        }
+
+        const hashedName = toHash(source)
         let nameModifier = defaultModifier
 
         if (hash) {

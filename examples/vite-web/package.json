@@ -1,28 +1,25 @@
 {
-  "name": "vite-web",
+  "name": "prev-vite",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "build": "pnpm run build:server;pnpm run build:client",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --outDir dist/server --ssr src/entry-server.js",
-    "serve": "NODE_ENV=production node server.js",
+    "build": "pnpm build:server; pnpm build:client",
+    "start:prod": "NODE_ENV=production node server.js",
     "preview": "vite preview"
   },
-  "devDependencies": {
-    "@babel/plugin-transform-react-jsx-development": "^7.18.6",
-    "babel-plugin-transform-hook-names": "^1.0.2",
-    "import-jsx": "^5.0.0",
-    "tiny-glob": "^0.2.9",
-    "vite": "^4.1.0"
-  },
   "dependencies": {
-    "@preact/preset-vite": "^2.5.0",
+    "@barelyhuman/preact-island-plugins": "workspace:*",
     "express": "^4.18.2",
-    "preact": "^10.13.0",
-    "preact-render-to-string": "^5.2.6",
+    "preact": "^10.13.1",
+    "preact-render-to-string": "^6.0.3",
     "serve-static": "^1.15.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.5.0",
+    "vite": "^4.3.2"
   }
 }
