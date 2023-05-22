@@ -30,6 +30,6 @@ jobs:
         run: pnpm build
 
       - name: Publish
-        run: cd dist; npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
