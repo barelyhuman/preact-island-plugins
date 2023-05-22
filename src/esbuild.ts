@@ -16,6 +16,7 @@ export default function preactIslandPlugin({
       build.onLoad({ filter: /\.(js|ts)x?$/ }, async (args: any) => {
         const ogFilePath = args.path
         let isIsland = false
+        let commentIsland = false
 
         // FIXME: reading the entire source would be useless,
         // just get the first few lines to see if it exists.
@@ -26,6 +27,7 @@ export default function preactIslandPlugin({
         } else {
           if (/\/\/[ ]*[@]{1}island?$/gim.test(source)) {
             isIsland = true
+            commentIsland = true
           }
         }
 
@@ -57,7 +59,11 @@ export default function preactIslandPlugin({
         const normalizedName = nameModifier(fileName)
 
         const fpath = path.join(genPath, normalizedName)
-        await fs.writeFile(fpath, client, 'utf8')
+        await fs.writeFile(
+          fpath,
+          commentIsland ? '//@island\n' + client : client,
+          'utf8'
+        )
 
         return {
           contents: server,

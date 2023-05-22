@@ -24,11 +24,13 @@ export default function preactIslandPlugin(
     async transform(_: any, id: string) {
       const source = await fs.readFile(id, 'utf8')
       let isIsland = false
+      let commentIsland = false
 
       if (/\.island\.(jsx?|tsx?)?$/.test(id)) {
         isIsland = true
       } else {
         if (/\/\/[ ]*[@]{1}island?$/gim.test(source)) {
+          commentIsland = true
           isIsland = true
         }
       }
@@ -61,7 +63,12 @@ export default function preactIslandPlugin(
 
       // needs to be in `.generated/` for the client build to pick it up
       // can't use emitFile for this reason
-      await fs.writeFile(fpath, client, 'utf8')
+      await fs.writeFile(
+        fpath,
+        commentIsland ? '//@island\n' + client : client,
+        'utf8'
+      )
+
       const result = await transformWithEsbuild(server, id, {
         loader: 'jsx',
         jsx: 'automatic',
