@@ -32,6 +32,72 @@ create similar islands for other web libraries.
 - An island cannot render another island. Workaround: You can move the islands
   up to server rendered component and combine them there instead.
 
+## Documentation / Reference
+
+### Installation
+
+The plugins can be installed with the npm package
+`@barelyhuman/preact-island-plugins`
+
+```sh
+yarn add -D @barelyhuman/preact-island-plugins
+# or
+npm i -D @barelyhuman/preact-island-plugins
+```
+
+### Imports
+
+```js
+// you could import all of them this way, if working with CJS or older
+// node versions
+import plugins from '@barelyhuman/preact-island-plugins'
+const { vite, rollup, esbuild } = plugins
+
+// or
+
+import esbuildIslandPlugin from '@barelyhuman/preact-island-plugins/esbuild'
+import viteIslandPlugin from '@barelyhuman/preact-island-plugins/vite'
+import rollupIslandPlugin from '@barelyhuman/preact-island-plugins/rollup'
+```
+
+### API
+
+All plugins share the same set of options
+
+```tsx
+type Options = {
+  // the cwd decides where the preact plugins will generate the island
+  // clients and other generative files. So if you wish for the output of
+  // the plugin to be in `dist` this would point to "dist"
+  cwd: string,
+
+  // Atomic, if true would generate the islands with their own injection, and mounting
+  // scripts and if false would just generate the island custom web component that
+  // you can then control on how to inject into your client app.
+  atomic: boolean,
+
+  // baseURL only needs to be set if `atomic:true`, this is a string that is passed so that
+  // the script knows where it's assets will be stored.
+  // ex: if I set the baseURL as `/public` then my islands are generated with a `<script src="/public/island-file.js" />`
+  // to handle this url, your server should alias your assets to the `/public` url or you can change this baseURL to whatever
+  // your server already uses as the static asset path.
+  //-------------------------------------------------------
+  // NOTE: Preact Island Plugins is not responsible for moving the file to your asset directory, you'll have to do
+  // this in the build script
+  //-------------------------------------------------------
+  baseURL: string,
+
+  // hashing will generate island files with their names hashed if there's been a change in the data, this is done
+  // to force certain browsers to refetch the script, both useful during development and production when new features
+  // were added but aren't reflected due to a cached version of the script.
+  hash: boolean,
+})
+```
+
+### Internals
+
+- TBD
+
 # Goals
 
 - [x] Support JS
