@@ -6,6 +6,11 @@
 > **Note**: This is being built for personal use, and might change the API and
 > functionality as needed, would recommend forking it and using that instead.
 
+> **Warning**: This is a low level plugin written to built upon for writing
+> frameworks or being used in a boilerplate that handles the paths and entries
+> for the specified bundler. The plugin's work is just to generate island
+> components for you.
+
 ## Usage
 
 The repo comes with 3 plugins for different bundlers and these serve as the
