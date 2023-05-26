@@ -52,7 +52,8 @@ export default function preactIslandPlugin({
 
       const genPath = await createGeneratedDir({ cwd })
       const fileName = path.basename(id).replace('.js', '.client.js')
-      const fpath = path.join(genPath, fileName)
+      const normalizedName = nameModifier(fileName)
+      const fpath = path.join(genPath, normalizedName)
 
       // needs to be in `.generated/` for the client build to pick it up
       // can't use emitFile for this reason
