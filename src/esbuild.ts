@@ -3,12 +3,14 @@ import path from 'path'
 import { Options } from './lib/common.js'
 import { defaultModifier, sourceDataToIslands } from './lib/island.js'
 import { toHash } from './lib/to-hash.js'
+import esbuild from 'esbuild'
 
 export default function preactIslandPlugin({
-  cwd,
+  rootDir,
   atomic,
   baseURL,
   hash,
+  bundleClient,
 }: Options) {
   return {
     name: 'preact-island-plugin',
@@ -53,17 +55,35 @@ export default function preactIslandPlugin({
           }
         )
 
-        const genPath = await createGeneratedDir({ cwd })
+        const genPath = await createGeneratedDir({ cwd: rootDir })
         const fileName = path.basename(ogFilePath)
 
         const normalizedName = nameModifier(fileName)
-
         const fpath = path.join(genPath, normalizedName)
-        await fs.writeFile(
-          fpath,
-          commentIsland ? '//@island\n' + client : client,
-          'utf8'
-        )
+
+        if (bundleClient) {
+          const output = fpath.replace(
+            genPath,
+            path.resolve(bundleClient.outdir)
+          )
+          await esbuild.build({
+            entryPoints: [fpath],
+            bundle: true,
+            outfile: output,
+            platform: 'browser',
+            jsx: 'automatic',
+            jsxImportSource: 'preact',
+            loader: {
+              '.js': 'jsx',
+            },
+          })
+        } else {
+          await fs.writeFile(
+            fpath,
+            commentIsland ? '//@island\n' + client : client,
+            'utf8'
+          )
+        }
 
         return {
           contents: server,

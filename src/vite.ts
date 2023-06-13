@@ -7,7 +7,7 @@ import { defaultModifier, sourceDataToIslands } from './lib/island.js'
 import { toHash } from './lib/to-hash.js'
 
 export default function preactIslandPlugin(
-  { atomic = false, cwd = '.', baseURL = '', hash }: Options = <Options>{}
+  { atomic = false, rootDir = '.', baseURL = '', hash }: Options = <Options>{}
 ): Plugin {
   return {
     name: 'preact-island-plugin',
@@ -57,7 +57,7 @@ export default function preactIslandPlugin(
         }
       )
 
-      const genPath = await createGeneratedDir({ cwd })
+      const genPath = await createGeneratedDir({ cwd: rootDir })
       const fileName = path.basename(id).replace('.js', '.client.js')
       const fpath = path.join(genPath, fileName)
 

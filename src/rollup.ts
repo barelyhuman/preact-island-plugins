@@ -1,3 +1,4 @@
+import { existsSync } from 'fs'
 import fs from 'fs/promises'
 import path from 'path'
 import { Options } from './lib/common'
@@ -8,13 +9,18 @@ import { toHash } from './lib/to-hash.js'
 
 export default function preactIslandPlugin({
   atomic = false,
-  cwd = '.',
+  rootDir = '.',
   baseURL = '',
   hash = false,
 }: Options) {
   return {
     name: 'preact-island-plugin',
     async transform(_: any, id: string) {
+      // Ignore virtual files since we don't need to handle then
+      if (id.includes('virtual:')) return
+      // ignore files that don't exist
+      if (!existsSync(id)) return
+
       const source = await fs.readFile(id, 'utf8')
       let isIsland = false
       let commentIsland = false
@@ -50,7 +56,7 @@ export default function preactIslandPlugin({
         }
       )
 
-      const genPath = await createGeneratedDir({ cwd })
+      const genPath = await createGeneratedDir({ cwd: rootDir })
       const fileName = path.basename(id).replace('.js', '.client.js')
       const normalizedName = nameModifier(fileName)
       const fpath = path.join(genPath, normalizedName)
