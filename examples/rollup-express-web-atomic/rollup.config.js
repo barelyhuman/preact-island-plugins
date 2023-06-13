@@ -16,7 +16,7 @@ function getServerConfig() {
       preactIslandPlugin({
         baseURL: '/public/js',
         atomic: true,
-        cwd: '.',
+        rootDir: '.',
         hash: true,
       }),
       babel(),

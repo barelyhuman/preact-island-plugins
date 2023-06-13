@@ -50,7 +50,7 @@ const server = () =>
         baseURL: '/public/js',
         atomic,
         hash: true,
-        cwd: url.fileURLToPath(new URL('.', import.meta.url)),
+        rootDir: url.fileURLToPath(new URL('.', import.meta.url)),
       }),
     ],
     outfile: 'dist/server.js',

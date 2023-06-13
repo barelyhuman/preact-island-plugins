@@ -55,7 +55,7 @@ const server = () =>
       nodeExternalsPlugin(),
       preactIslandPlugin({
         baseURL: '/public/js',
-        cwd: url.fileURLToPath(new URL('.', import.meta.url)),
+        rootDir: url.fileURLToPath(new URL('.', import.meta.url)),
       }),
     ],
     outfile: 'dist/server.js',

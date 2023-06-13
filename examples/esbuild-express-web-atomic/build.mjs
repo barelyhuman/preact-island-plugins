@@ -61,7 +61,10 @@ const server = () =>
       preactIslandPlugin({
         baseURL: '/public/js',
         atomic: true,
-        cwd: url.fileURLToPath(new URL('.', import.meta.url)),
+        rootDir: url.fileURLToPath(new URL('.', import.meta.url)),
+        bundleClient: {
+          outdir: 'dist/js',
+        },
       }),
     ],
     outfile: 'dist/server.js',
@@ -69,8 +72,8 @@ const server = () =>
 
 async function main() {
   await server()
-  await generateManifest()
-  await client()
+  // await generateManifest()
+  // await client()
 }
 
 // if watching, watcher will execute an

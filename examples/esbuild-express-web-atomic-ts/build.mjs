@@ -61,7 +61,7 @@ const server = () =>
       preactIslandPlugin({
         baseURL: '/public/js',
         atomic: true,
-        cwd: url.fileURLToPath(new URL('.', import.meta.url)),
+        rootDir: url.fileURLToPath(new URL('.', import.meta.url)),
       }),
     ],
     outfile: 'dist/server.js',

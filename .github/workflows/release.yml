@@ -11,25 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
-
       - uses: pnpm/action-setup@v2.2.2
         with:
-          version: 7.15.0
+          version: 6.32.10
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Test
-        run: yarn test
+        run: pnpm test
 
       - name: Compile
         run: pnpm build
 
-      - name: Publish
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: JS-DevTools/npm-publish@v2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
