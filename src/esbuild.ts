@@ -60,11 +60,16 @@ export default function preactIslandPlugin({
 
         const normalizedName = nameModifier(fileName)
         const fpath = path.join(genPath, normalizedName)
+        await fs.writeFile(
+          fpath,
+          commentIsland ? '//@island\n' + client : client,
+          'utf8'
+        )
 
         if (bundleClient) {
           const output = fpath.replace(
             genPath,
-            path.resolve(bundleClient.outdir)
+            path.resolve(bundleClient.outDir)
           )
           await esbuild.build({
             entryPoints: [fpath],
@@ -77,12 +82,7 @@ export default function preactIslandPlugin({
               '.js': 'jsx',
             },
           })
-        } else {
-          await fs.writeFile(
-            fpath,
-            commentIsland ? '//@island\n' + client : client,
-            'utf8'
-          )
+          await fs.rm(fpath)
         }
 
         return {

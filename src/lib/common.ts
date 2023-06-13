@@ -6,6 +6,6 @@ export type Options = {
   bundleClient?:
     | undefined
     | {
-        outdir: string
+        outDir: string
       }
 }

@@ -74,7 +74,7 @@ type Options = {
   // the cwd decides where the preact plugins will generate the island
   // clients and other generative files. So if you wish for the output of
   // the plugin to be in `dist` this would point to "dist"
-  cwd: string,
+  rootDir: string,
 
   // Atomic, if true would generate the islands with their own injection, and mounting
   // scripts and if false would just generate the island custom web component that

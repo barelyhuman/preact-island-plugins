@@ -2,7 +2,6 @@ import { existsSync } from 'fs'
 import fs from 'fs/promises'
 import path from 'path'
 import { Options } from './lib/common'
-import { sourceToIslands } from './lib/island'
 
 import { defaultModifier, sourceDataToIslands } from './lib/island.js'
 import { toHash } from './lib/to-hash.js'
