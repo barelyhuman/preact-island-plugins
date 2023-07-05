@@ -6,8 +6,7 @@
   "author": "reaper <ahoy@barelyhuman.dev>",
   "type": "module",
   "files": [
-    "src",
-    "dist"
+    "./*"
   ],
   "types": "./index.d.ts",
   "exports": {
