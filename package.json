@@ -34,8 +34,7 @@
     "./*": "./*"
   },
   "scripts": {
-    "build": "tsup",
-    "postbuild": "nr copy",
+    "build": "tsup; nr copy",
     "copy": "cp package.json dist/ ;cp README.md dist/ ;cp LICENSE dist/",
     "dev": "tsup --watch src",
     "fix": "npx prettier --write .",
