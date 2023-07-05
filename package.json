@@ -8,27 +8,27 @@
   "files": [
     "./*"
   ],
-  "types": "./index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "require": "./index.cjs",
-      "import": "./index.js"
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
     },
     "./esbuild": {
-      "types": "./esbuild.d.ts",
-      "require": "./esbuild.cjs",
-      "import": "./esbuild.js"
+      "types": "./dist/esbuild.d.ts",
+      "require": "./dist/esbuild.cjs",
+      "import": "./dist/esbuild.js"
     },
     "./rollup": {
-      "types": "./rollup.d.ts",
-      "require": "./rollup.cjs",
-      "import": "./rollup.js"
+      "types": "./dist/rollup.d.ts",
+      "require": "./dist/rollup.cjs",
+      "import": "./dist/rollup.js"
     },
     "./vite": {
-      "types": "./vite.d.ts",
-      "require": "./vite.cjs",
-      "import": "./vite.js"
+      "types": "./dist/vite.d.ts",
+      "require": "./dist/vite.cjs",
+      "import": "./dist/vite.js"
     },
     "./*": "./*"
   },
@@ -50,8 +50,7 @@
     "@babel/core": "^7.21.3",
     "@babel/generator": "^7.21.1",
     "@babel/parser": "^7.21.1",
-    "@babel/preset-typescript": "^7.21.0",
-    "esbuild": "^0.17.16"
+    "@babel/preset-typescript": "^7.21.0"
   },
   "devDependencies": {
     "@antfu/ni": "^0.21.4",
@@ -59,13 +58,13 @@
     "@types/babel__core": "^7.20.0",
     "@types/node": "^18.14.0",
     "bumpp": "^9.0.0",
+    "esbuild": "^0.17.16",
     "fast-glob": "^3.2.12",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5",
-    "unplugin": "^1.3.1",
     "vite": "^4.1.0",
     "vitest": "^0.32.0"
   },
@@ -75,13 +74,10 @@
     "vite": "^4.1.0"
   },
   "peerDependenciesMeta": {
-    "vite": {
-      "optional": true
-    },
-    "rollup": {
-      "optional": true
-    },
     "esbuild": {
+      "optional": true
+    },
+    "vite": {
       "optional": true
     }
   },

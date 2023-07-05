@@ -4,7 +4,7 @@ import fs from 'fs/promises'
 import glob from 'tiny-glob'
 import * as url from 'url'
 import Watcher from 'watcher'
-import preactIslandPlugin from '@barelyhuman/preact-island-plugins'
+import preactIslandPlugin from '@barelyhuman/preact-island-plugins/esbuild'
 
 const atomic = true
 const watch = process.argv.slice(2).includes('-w')
@@ -17,8 +17,38 @@ const commonConfig = {
     '.js': 'jsx',
   },
   target: 'node14',
-  format: 'esm',
+  format: 'cjs',
   jsxImportSource: 'preact',
+}
+
+const generateManifest = async () => {
+  const entryPoints = await glob('./**/*.client.js', {
+    absolute: false,
+    cwd: './.generated',
+  })
+  await fs.writeFile(
+    './.generated/client.js',
+    entryPoints.map(x => `import "./${x}";`).join('\n'),
+    'utf8'
+  )
+}
+
+const client = async () => {
+  const entryPoints = await glob('./**/*.client.js', {
+    absolute: true,
+    cwd: './.generated',
+  })
+  esbuild.build({
+    ...commonConfig,
+    entryPoints: entryPoints,
+    minify: true,
+    splitting: true,
+    // because of this, it's right now limited to esm
+    // https://github.com/evanw/esbuild/issues/16
+    format: 'esm',
+    platform: 'browser',
+    outdir: 'dist/js',
+  })
 }
 
 const server = () =>
@@ -28,7 +58,7 @@ const server = () =>
     entryPoints: ['./server.js'],
     plugins: [
       nodeExternalsPlugin(),
-      preactIslandPlugin.esbuild({
+      preactIslandPlugin({
         baseURL: '/public/js',
         atomic: true,
         rootDir: url.fileURLToPath(new URL('.', import.meta.url)),

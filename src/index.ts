@@ -1,3 +1,11 @@
-import plug from "./plugin"
+import esbuildPlugin from './esbuild'
+import rollupPlugin from './rollup'
+import vitePlugin from './vite'
 
-export default plug;
+const PreactPlugin = {
+  esbuild: esbuildPlugin,
+  rollup: rollupPlugin,
+  vite: vitePlugin,
+}
+
+export default PreactPlugin

@@ -1,9 +1,11 @@
 {
   "scripts": {
     "prebuild": "rimraf dist",
-    "dev": "pnpm run build; concurrently 'pnpm:build:* -w' 'pnpm:dev:nodemon'",
-    "build": "rollup -c",
+    "dev": "pnpm run build:server; pnpm run build:client; concurrently 'pnpm:build:* -w' 'pnpm:dev:nodemon'",
+    "build:server": "rollup -c --config-server",
+    "build:client": "rollup -c --config-client",
     "dev:nodemon": "nodemon --watch src --watch dist --ext js dist/server.js",
+    "build": "pnpm run build:server; pnpm run build:client;",
     "fix": "prettier --write ."
   },
   "devDependencies": {
