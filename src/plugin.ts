@@ -83,7 +83,7 @@ const preactIslandPlugin = createUnplugin(
           'utf8'
         )
 
-        if (bundleClient) {
+        if (bundleClient && bundleClient.outDir) {
           const output = fpath.replace(
             genPath,
             path.resolve(bundleClient.outDir)
@@ -99,7 +99,10 @@ const preactIslandPlugin = createUnplugin(
               '.js': 'jsx',
             },
           })
-          await fs.rm(fpath)
+
+          if (existsSync(fpath)) {
+            await fs.rm(fpath)
+          }
         }
 
         return {
