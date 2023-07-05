@@ -35,6 +35,8 @@
   },
   "scripts": {
     "build": "tsup",
+    "postbuild": "nr copy",
+    "copy": "cp package.json dist/ ;cp README.md dist/ ;cp LICENSE dist/",
     "dev": "tsup --watch src",
     "fix": "npx prettier --write .",
     "next": "bumpp",
@@ -54,6 +56,7 @@
     "esbuild": "^0.17.16"
   },
   "devDependencies": {
+    "@antfu/ni": "^0.21.4",
     "@barelyhuman/prettier-config": "^1.1.0",
     "@types/babel__core": "^7.20.0",
     "@types/node": "^18.14.0",
@@ -70,8 +73,8 @@
   },
   "peerDependencies": {
     "esbuild": "^0.17.16",
-    "vite": "^4.1.0",
-    "rollup": "^3.17.3"
+    "rollup": "^3.17.3",
+    "vite": "^4.1.0"
   },
   "peerDependenciesMeta": {
     "vite": {
