@@ -4,6 +4,7 @@ import { Options } from './lib/common.js'
 import { defaultModifier, sourceDataToIslands } from './lib/island.js'
 import { toHash } from './lib/to-hash.js'
 import esbuild from 'esbuild'
+import { existsSync } from 'fs'
 
 export default function preactIslandPlugin({
   rootDir,
@@ -60,13 +61,14 @@ export default function preactIslandPlugin({
 
         const normalizedName = nameModifier(fileName)
         const fpath = path.join(genPath, normalizedName)
+
         await fs.writeFile(
           fpath,
           commentIsland ? '//@island\n' + client : client,
           'utf8'
         )
 
-        if (bundleClient) {
+        if (bundleClient && bundleClient.outDir) {
           const output = fpath.replace(
             genPath,
             path.resolve(bundleClient.outDir)
@@ -82,7 +84,10 @@ export default function preactIslandPlugin({
               '.js': 'jsx',
             },
           })
-          await fs.rm(fpath)
+          
+          if (existsSync(fpath)) {
+            await fs.rm(fpath)
+          }
         }
 
         return {
