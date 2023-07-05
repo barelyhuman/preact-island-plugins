@@ -1,12 +1,10 @@
 import * as esbuild from 'esbuild'
 import { nodeExternalsPlugin } from 'esbuild-node-externals'
-import fs from 'fs/promises'
 import glob from 'tiny-glob'
 import * as url from 'url'
 import Watcher from 'watcher'
-import preactIslandPlugin from '@barelyhuman/preact-island-plugins'
+import preactIslandPlugin from '@barelyhuman/preact-island-plugins/esbuild'
 
-const atomic = true
 const watch = process.argv.slice(2).includes('-w')
 
 const commonConfig = {
@@ -17,7 +15,7 @@ const commonConfig = {
     '.js': 'jsx',
   },
   target: 'node14',
-  format: 'esm',
+  format: 'cjs',
   jsxImportSource: 'preact',
 }
 
@@ -28,12 +26,12 @@ const server = () =>
     entryPoints: ['./server.js'],
     plugins: [
       nodeExternalsPlugin(),
-      preactIslandPlugin.esbuild({
+      preactIslandPlugin({
         baseURL: '/public/js',
         atomic: true,
         rootDir: url.fileURLToPath(new URL('.', import.meta.url)),
         bundleClient: {
-          outdir: 'dist/js',
+          outDir: 'dist/js',
         },
       }),
     ],
@@ -42,8 +40,6 @@ const server = () =>
 
 async function main() {
   await server()
-  // await generateManifest()
-  // await client()
 }
 
 // if watching, watcher will execute an

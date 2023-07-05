@@ -1,6 +1,6 @@
-import fs from 'fs/promises'
-import path from 'path'
-import { astFromCode, codeFromAST, sourceToAST } from './ast'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { astFromCode, codeFromAST, sourceToAST } from './ast.js'
 
 const PREFIX = '[preact-island]'
 
