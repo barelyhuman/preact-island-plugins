@@ -9,27 +9,27 @@
     "src",
     "dist"
   ],
-  "types": "./dist/index.d.ts",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js"
+      "types": "./index.d.ts",
+      "require": "./index.cjs",
+      "import": "./index.js"
     },
     "./esbuild": {
-      "types": "./dist/esbuild.d.ts",
-      "require": "./dist/esbuild.cjs",
-      "import": "./dist/esbuild.js"
+      "types": "./esbuild.d.ts",
+      "require": "./esbuild.cjs",
+      "import": "./esbuild.js"
     },
     "./rollup": {
-      "types": "./dist/rollup.d.ts",
-      "require": "./dist/rollup.cjs",
-      "import": "./dist/rollup.js"
+      "types": "./rollup.d.ts",
+      "require": "./rollup.cjs",
+      "import": "./rollup.js"
     },
     "./vite": {
-      "types": "./dist/vite.d.ts",
-      "require": "./dist/vite.cjs",
-      "import": "./dist/vite.js"
+      "types": "./vite.d.ts",
+      "require": "./vite.cjs",
+      "import": "./vite.js"
     },
     "./*": "./*"
   },
@@ -70,13 +70,17 @@
   },
   "peerDependencies": {
     "esbuild": "^0.17.16",
-    "vite": "^4.1.0"
+    "vite": "^4.1.0",
+    "rollup": "^3.17.3"
   },
   "peerDependenciesMeta": {
     "vite": {
       "optional": true
     },
     "rollup": {
+      "optional": true
+    },
+    "esbuild": {
       "optional": true
     }
   },

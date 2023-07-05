@@ -3,9 +3,10 @@ import { nodeExternalsPlugin } from 'esbuild-node-externals'
 import glob from 'tiny-glob'
 import * as url from 'url'
 import Watcher from 'watcher'
-import preactIslandPlugin from '@barelyhuman/preact-island-plugins/esbuild'
+import islandPlugin from '@barelyhuman/preact-island-plugins/esbuild'
 
-const atomic = true
+const preactIslandPlugin = islandPlugins.esbuild
+
 const watch = process.argv.slice(2).includes('-w')
 
 const commonConfig = {

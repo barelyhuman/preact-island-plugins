@@ -1,4 +1,4 @@
-// @island
+//@island
 
 import { useState } from 'preact/hooks'
 
