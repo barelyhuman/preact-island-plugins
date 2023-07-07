@@ -1,0 +1,41 @@
+{
+  "name": "@barelyhuman/preact-island-plugins",
+  "version": "0.0.14-beta.4",
+  "main": "index.js",
+  "repository": "barelyhuman/preact-island-plugins",
+  "license": "MIT",
+  "author": "reaper <ahoy@barelyhuman.dev>",
+  "prettier": "@barelyhuman/prettier-config",
+  "types": "./lib/types.d.ts",
+  "exports": {
+    ".": "./index.js",
+    "./esbuild": "./esbuild.js"
+  },
+  "scripts": {
+    "play": "cd playground; node build.js; node dist/server.js",
+    "fix": "npx prettier --write .",
+    "next": "bumpp"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@barelyhuman/prettier-config": "^1.1.0",
+    "prettier": "^3.0.0"
+  },
+  "dependencies": {
+    "acorn": "^8.10.0",
+    "acorn-class-fields": "^1.0.0",
+    "acorn-import-assertions": "^1.7.2",
+    "acorn-jsx": "^5.3.1",
+    "acorn-logical-assignment": "^0.1.4",
+    "acorn-private-methods": "^1.0.0",
+    "acorn-static-class-features": "^1.0.0",
+    "astring": "^1.8.6",
+    "astring-jsx": "^1.0.1",
+    "esbuild": "^0.18.11"
+  },
+  "peerDependencies": {
+    "preact": "^10.15.1"
+  }
+}
