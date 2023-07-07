@@ -6,10 +6,9 @@
   "license": "MIT",
   "author": "reaper <ahoy@barelyhuman.dev>",
   "prettier": "@barelyhuman/prettier-config",
-  "types": "./lib/types.d.ts",
   "exports": {
     ".": "./index.js",
-    "./esbuild": "./esbuild.js"
+    "./esbuild": "./esbuild.js"    
   },
   "scripts": {
     "play": "cd playground; node build.js; node dist/server.js",
