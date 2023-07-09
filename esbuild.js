@@ -9,7 +9,7 @@ exports = module.exports = esbuildPlugin
 const defaultOptions = {
   rootDir: '.',
   baseURL: '/public',
-  atomic: false,
+  atomic: true,
   hash: false,
   client: {
     output: './dist/client',

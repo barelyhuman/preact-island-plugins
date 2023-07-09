@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build:esbuild": "node build.js",
+    "build:rollup": "npx rollup -c"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +18,15 @@
     "preact": "^10.15.1",
     "preact-render-to-string": "^6.1.0",
     "serve-static": "^1.15.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.2",
+    "rollup": "^3.26.2",
+    "@babel/core": "^7.21.0",
+    "@rollup/plugin-babel":"^6.0.3",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@babel/plugin-transform-react-jsx": "^7.21.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.1.6"
   }
 }

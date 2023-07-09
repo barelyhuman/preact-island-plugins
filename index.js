@@ -1,4 +1,4 @@
-const { generateIslands, getManifest } = require('./lib/plugin')
-
-exports.generateIslands = generateIslands
-exports.getManifest = getManifest
+module.exports = {
+  esbuild: require('./esbuild'),
+  rollup: require('./rollup'),
+}
