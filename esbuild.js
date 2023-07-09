@@ -9,10 +9,9 @@ exports = module.exports = esbuildPlugin
 const defaultOptions = {
   rootDir: '.',
   baseURL: '/public',
-  atomic: true,
-  hash: true,
+  atomic: false,
+  hash: false,
   client: {
-    bundle: true,
     output: './dist/client',
   },
 }
@@ -28,7 +27,7 @@ function esbuildPlugin(options = defaultOptions) {
       build.onLoad({ filter: /\.(js|ts)x?$/ }, async args => {
         const { code, paths } = generateIslands(args.path, options)
 
-        if (options.client?.bundle && paths.client) {
+        if (paths.client) {
           await mkdir(dirname(paths.client), { recursive: true })
           writeFileSync(paths.client, code.client, 'utf8')
           await esbuild.build({

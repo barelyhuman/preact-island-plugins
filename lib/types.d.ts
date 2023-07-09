@@ -4,7 +4,6 @@ export interface Options {
   atomic?: boolean;
   hash?: boolean;
   client: {
-    bundle?: boolean
     output: string
   }
 }
