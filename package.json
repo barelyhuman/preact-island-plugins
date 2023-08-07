@@ -1,6 +1,6 @@
 {
   "name": "@barelyhuman/preact-island-plugins",
-  "version": "0.1.0",
+  "version": "0.1.1-beta.0",
   "repository": "barelyhuman/preact-island-plugins",
   "license": "MIT",
   "author": "reaper <ahoy@barelyhuman.dev>",
