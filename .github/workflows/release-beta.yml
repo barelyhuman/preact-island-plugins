@@ -1,0 +1,36 @@
+name: release(beta)
+
+on:
+  push:
+    tags:
+      - '*-beta.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          registry-url: https://registry.npmjs.org/
+
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 6.32.10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Test
+        run: pnpm test
+
+      - name: Compile
+        run: pnpm build
+
+      - name: Publish
+        run: |
+          cd dist
+          npm publish --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
