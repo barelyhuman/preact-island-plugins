@@ -15,22 +15,14 @@ jobs:
           node-version: '18'
           registry-url: https://registry.npmjs.org/
 
-      - uses: pnpm/action-setup@v2.2.2
-        with:
-          version: 6.32.10
-
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
 
       - name: Test
-        run: pnpm test
-
-      - name: Compile
-        run: pnpm build
+        run: npm run test
 
       - name: Publish
         run: |
-          cd dist
           npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
