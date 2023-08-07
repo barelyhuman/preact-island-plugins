@@ -6,11 +6,17 @@ export type { Options } from './lib/types'
  * @returns
  */
 declare function rollupPlugin(options?: Options): {
-    name: string;
-    transform(_: any, id: any): Promise<{
-        code: any;
-        map: null;
-    } | undefined>;
-};
+  name: string
+  transform(
+    _: any,
+    id: any
+  ): Promise<
+    | {
+        code: any
+        map: null
+      }
+    | undefined
+  >
+}
 
 export = rollupPlugin
