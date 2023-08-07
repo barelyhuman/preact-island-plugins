@@ -17,8 +17,18 @@
     "play": "cd playground; node build.js; node dist/server.js",
     "play:build:esbuild": "cd playground; npm run build:esbuild",
     "play:build:rollup": "cd playground; npm run build:rollup",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "echo 'tested'"
   },
+  "files": [
+    "index.js",
+    "internals.js",
+    "esbuild.js",
+    "esbuild.d.ts",
+    "rollup.js",
+    "rollup.d.ts",
+    "lib"
+  ],
   "lint-staged": {
     "*.{js,css,md,json}": "prettier --write"
   },
