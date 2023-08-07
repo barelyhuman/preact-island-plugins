@@ -1,36 +1,28 @@
 {
   "name": "@barelyhuman/preact-island-plugins",
   "version": "0.1.0",
-  "main": "index.js",
   "repository": "barelyhuman/preact-island-plugins",
   "license": "MIT",
   "author": "reaper <ahoy@barelyhuman.dev>",
-  "prettier": "@barelyhuman/prettier-config",
   "exports": {
     ".": "./index.js",
     "./internals": "./internals.js",
     "./esbuild": "./esbuild.js",
     "./rollup": "./rollup.js"
   },
+  "main": "index.js",
   "scripts": {
+    "fix": "npx prettier --write .",
+    "next": "bumpp",
     "play": "cd playground; node build.js; node dist/server.js",
     "play:build:esbuild": "cd playground; npm run build:esbuild",
     "play:build:rollup": "cd playground; npm run build:rollup",
-    "fix": "npx prettier --write .",
-    "next": "bumpp"
+    "prepare": "husky install"
   },
-  "publishConfig": {
-    "access": "public"
+  "lint-staged": {
+    "*.{js,css,md,json}": "prettier --write"
   },
-  "devDependencies": {
-    "@babel/core": "^7.22.8",
-    "@babel/plugin-transform-react-jsx": "^7.22.5",
-    "@barelyhuman/prettier-config": "^1.1.0",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-node-resolve": "^15.1.0",
-    "prettier": "^3.0.0",
-    "rollup": "^3.26.2"
-  },
+  "prettier": "@barelyhuman/prettier-config",
   "dependencies": {
     "acorn": "^8.10.0",
     "acorn-class-fields": "^1.0.0",
@@ -43,12 +35,23 @@
     "astring-jsx": "^1.0.1",
     "esbuild": "^0.18.11"
   },
+  "devDependencies": {
+    "@babel/core": "^7.22.8",
+    "@babel/plugin-transform-react-jsx": "^7.22.5",
+    "@barelyhuman/prettier-config": "^1.1.0",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "prettier": "^3.0.0",
+    "rollup": "^3.26.2"
+  },
   "peerDependencies": {
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-node-resolve": "^15.1.0",
     "esbuild": "^0.18.11",
     "preact": "^10.15.1",
-    "rollup": "^3.26.2",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-node-resolve": "^15.1.0"
+    "rollup": "^3.26.2"
   },
   "peerDependenciesMeta": {
     "esbuild": {
@@ -57,5 +60,8 @@
     "rollup": {
       "optional": true
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
