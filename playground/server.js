@@ -1,15 +1,15 @@
 import express from 'express'
 import comToString from 'preact-render-to-string'
-import Counter from './Counter'
 import serveStatic from 'serve-static'
 import { join } from 'path'
+import Container from './Container'
 
 const app = express()
 
 app.use('/public', serveStatic(join(__dirname, './client')))
 
 app.get('/', (req, res) => {
-  return res.send(comToString(<Counter />))
+  return res.send(comToString(<Container />))
 })
 
 app.listen(3000, () => {
