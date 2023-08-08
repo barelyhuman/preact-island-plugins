@@ -52,6 +52,7 @@
     "@barelyhuman/prettier-config": "^1.1.0",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-typescript": "^11.1.2",
     "bumpp": "^9.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
