@@ -1,6 +1,6 @@
-const { generateIslands } = require('./lib/plugin')
+const { generateIslands, generateIslandsWithSource } = require('./lib/plugin')
 const { writeFileSync } = require('fs')
-const { mkdir } = require('fs/promises')
+const { mkdir, readFile } = require('fs/promises')
 const { dirname } = require('path')
 const esbuild = require('esbuild')
 
@@ -17,7 +17,7 @@ const defaultOptions = {
 }
 
 /**
- * @param {import('../lib/types').Options} options
+ * @param {import('../lib/types').ESbuildOptions} options
  * @returns
  */
 function esbuildPlugin(options = defaultOptions) {
@@ -25,7 +25,42 @@ function esbuildPlugin(options = defaultOptions) {
     name: 'preact-island-plugin',
     async setup(build) {
       build.onLoad({ filter: /\.(js|ts)x?$/ }, async args => {
-        const { code, paths } = generateIslands(args.path, options)
+        let isIsland = false
+        let generatorOutput
+
+        if (args.path.endsWith('.ts') || args.path.endsWith('.tsx')) {
+          const sourceCode = await readFile(args.path, 'utf8')
+
+          if (
+            sourceCode.indexOf('//@island') > -1 ||
+            sourceCode.indexOf('// @island') > -1
+          ) {
+            isIsland = true
+          }
+
+          const esbuildTransformOptions = Object.assign(
+            {},
+            (options && options.esbuild) || {}
+          )
+
+          const jsCode = esbuild.transform(sourceCode, {
+            loader: 'tsx',
+            platform: 'node',
+            target: 'node16',
+            jsx: 'preserve',
+            ...esbuildTransformOptions,
+          })
+
+          generatorOutput = generateIslandsWithSource(
+            (await jsCode).code,
+            args.path,
+            options
+          )
+        } else {
+          generatorOutput = generateIslands(args.path, options)
+        }
+
+        const { code, paths } = generatorOutput
 
         if (paths.client) {
           await mkdir(dirname(paths.client), { recursive: true })

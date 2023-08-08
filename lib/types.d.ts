@@ -1,3 +1,5 @@
+import type { TransformOptions } from 'esbuild'
+
 export interface Options {
   rootDir: string
   baseURL: string
@@ -6,4 +8,8 @@ export interface Options {
   client: {
     output: string
   }
+}
+
+export type ESbuildOptions = Options & {
+  esbuild?: TransformOptions
 }
