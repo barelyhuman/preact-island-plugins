@@ -7,5 +7,6 @@ type Props = {
 }
 
 export default function CounterTS({ value, inc }: Props) {
+  // @ts-ignore no tsconfig in the playgroud
   return <button onClick={inc}>{value}</button>
 }
