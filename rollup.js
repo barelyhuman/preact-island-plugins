@@ -6,7 +6,6 @@ const rollup = require('rollup')
 const { nodeResolve } = require('@rollup/plugin-node-resolve')
 const jsx = require('acorn-jsx')
 const { babel } = require('@rollup/plugin-babel')
-const typescript = require('@rollup/plugin-typescript')
 
 exports = module.exports = rollupPlugin
 
@@ -33,6 +32,8 @@ function rollupPlugin(options = defaultOptions) {
       if (!existsSync(id)) return
 
       let generatedOutput
+
+      const typescript = autoLoadTypescriptPlug()
 
       if (id.endsWith('ts') || id.endsWith('tsx')) {
         const builder = await rollup.rollup({
@@ -67,6 +68,7 @@ function rollupPlugin(options = defaultOptions) {
             }),
             nodeResolve(),
             babel({
+              babelHelpers: 'bundled',
               plugins: [
                 [
                   '@babel/plugin-transform-react-jsx',
@@ -87,5 +89,20 @@ function rollupPlugin(options = defaultOptions) {
         map: null,
       }
     },
+  }
+}
+
+// Creates a mock plugin if typescript
+// doesn't exist and will just run an empty plugin instead
+function autoLoadTypescriptPlug() {
+  try {
+    const plug = require('@rollup/plugin-typescript')
+    if (plug) {
+      return plug.default
+    }
+  } catch (err) {
+    return () => ({
+      name: 'typescript',
+    })
   }
 }
