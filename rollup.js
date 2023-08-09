@@ -1,10 +1,12 @@
-const { generateIslands } = require('./lib/plugin')
+const { generateIslands, generateIslandsWithSource } = require('./lib/plugin')
 const { writeFileSync, existsSync } = require('fs')
 const { mkdir } = require('fs/promises')
 const { dirname } = require('path')
 const rollup = require('rollup')
 const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const jsx = require('acorn-jsx')
 const { babel } = require('@rollup/plugin-babel')
+const { resolveTsConfig } = require('./lib/typescript')
 
 exports = module.exports = rollupPlugin
 
@@ -13,14 +15,16 @@ const defaultOptions = {
   baseURL: '/public',
   atomic: true,
   hash: false,
+  tsconfig: './tsconfig.json',
   client: {
+    tsconfig: './tsconfig.json',
     output: './dist/client',
   },
 }
 
 /**
  * @param {import('../lib/types').Options} options
- * @returns
+ * @returns {import("rollup").Plugin}
  */
 function rollupPlugin(options = defaultOptions) {
   return {
@@ -30,7 +34,33 @@ function rollupPlugin(options = defaultOptions) {
       // ignore files that don't exist
       if (!existsSync(id)) return
 
-      const { code, paths } = generateIslands(id, options)
+      let generatedOutput
+
+      const typescript = autoLoadTypescriptPlug()
+
+      if (id.endsWith('ts') || id.endsWith('tsx')) {
+        const builder = await rollup.rollup({
+          input: id,
+          acornInjectPlugins: [jsx()],
+          plugins: [
+            typescript({
+              ...(await resolveTsConfig(options.client.tsconfig)),
+              // Override given tsconfig's jsx property
+              // for the client source since, it is the expected
+              // input for the plugin
+              // and modified by the plugin
+              jsx: 'preserve',
+            }),
+          ],
+        })
+        const build = await builder.generate({})
+        const sourceCode = build.output[0].code
+        generatedOutput = generateIslandsWithSource(sourceCode, id, options)
+      } else {
+        generatedOutput = generateIslands(id, options)
+      }
+
+      const { code, paths } = generatedOutput
 
       if (paths.client) {
         await mkdir(dirname(paths.client), { recursive: true })
@@ -38,9 +68,16 @@ function rollupPlugin(options = defaultOptions) {
 
         const builder = await rollup.rollup({
           input: paths.client,
+          acornInjectPlugins: [jsx()],
           plugins: [
+            typescript({
+              ...(await resolveTsConfig(options.client.tsconfig)),
+              jsx: 'react-jsx',
+              jsxImportSource: 'preact',
+            }),
             nodeResolve(),
             babel({
+              babelHelpers: 'bundled',
               plugins: [
                 [
                   '@babel/plugin-transform-react-jsx',
@@ -61,5 +98,20 @@ function rollupPlugin(options = defaultOptions) {
         map: null,
       }
     },
+  }
+}
+
+// Creates a mock plugin if typescript
+// doesn't exist and will just run an empty plugin instead
+function autoLoadTypescriptPlug() {
+  try {
+    const plug = require('@rollup/plugin-typescript')
+    if (plug) {
+      return plug.default
+    }
+  } catch (err) {
+    return () => ({
+      name: 'typescript',
+    })
   }
 }

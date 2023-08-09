@@ -1,11 +1,11 @@
-import type { Options } from './lib/types'
-export type { Options } from './lib/types'
+import type { ESbuildOptions } from './lib/types'
+export type { ESbuildOptions } from './lib/types'
 
 /**
- * @param {import('../lib/types').Options} options
+ * @param {import('../lib/types').ESbuildOptions} options
  * @returns
  */
-declare function esbuildPlugin(options?: Options): {
+declare function esbuildPlugin(options?: ESbuildOptions): {
   name: string
   setup(build: any): Promise<void>
 }
