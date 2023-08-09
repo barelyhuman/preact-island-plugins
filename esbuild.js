@@ -3,6 +3,7 @@ const { writeFileSync } = require('fs')
 const { mkdir, readFile } = require('fs/promises')
 const { dirname } = require('path')
 const esbuild = require('esbuild')
+const { resolveTsConfig } = require('./lib/typescript')
 
 exports = module.exports = esbuildPlugin
 
@@ -11,7 +12,9 @@ const defaultOptions = {
   baseURL: '/public',
   atomic: true,
   hash: false,
+  tsconfig: './tsconfig.json',
   client: {
+    tsconfig: './tsconfig.json',
     output: './dist/client',
   },
 }
@@ -48,6 +51,9 @@ function esbuildPlugin(options = defaultOptions) {
             platform: 'node',
             target: 'node16',
             jsx: 'preserve',
+            tsconfigRaw: {
+              ...(await resolveTsConfig(options.tsconfig)),
+            },
             ...esbuildTransformOptions,
           })
 
@@ -70,6 +76,11 @@ function esbuildPlugin(options = defaultOptions) {
             bundle: true,
             allowOverwrite: true,
             outfile: paths.client,
+            tsconfigRaw: {
+              ...(await resolveTsConfig(
+                options.client && options.client.tsconfig
+              )),
+            },
             platform: 'browser',
             jsx: 'automatic',
             jsxImportSource: 'preact',

@@ -6,6 +6,7 @@ const rollup = require('rollup')
 const { nodeResolve } = require('@rollup/plugin-node-resolve')
 const jsx = require('acorn-jsx')
 const { babel } = require('@rollup/plugin-babel')
+const { resolveTsConfig } = require('./lib/typescript')
 
 exports = module.exports = rollupPlugin
 
@@ -14,7 +15,9 @@ const defaultOptions = {
   baseURL: '/public',
   atomic: true,
   hash: false,
+  tsconfig: './tsconfig.json',
   client: {
+    tsconfig: './tsconfig.json',
     output: './dist/client',
   },
 }
@@ -41,6 +44,11 @@ function rollupPlugin(options = defaultOptions) {
           acornInjectPlugins: [jsx()],
           plugins: [
             typescript({
+              ...(await resolveTsConfig(options.client.tsconfig)),
+              // Override given tsconfig's jsx property
+              // for the client source since, it is the expected
+              // input for the plugin
+              // and modified by the plugin
               jsx: 'preserve',
             }),
           ],
@@ -63,6 +71,7 @@ function rollupPlugin(options = defaultOptions) {
           acornInjectPlugins: [jsx()],
           plugins: [
             typescript({
+              ...(await resolveTsConfig(options.client.tsconfig)),
               jsx: 'react-jsx',
               jsxImportSource: 'preact',
             }),
