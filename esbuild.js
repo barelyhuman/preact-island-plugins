@@ -28,10 +28,10 @@ function esbuildPlugin(options = defaultOptions) {
     name: 'preact-island-plugin',
     async setup(build) {
       build.onLoad({ filter: /\.(js|ts)x?$/ }, async args => {
-        let isIsland = false
         let generatorOutput
 
         if (args.path.endsWith('.ts') || args.path.endsWith('.tsx')) {
+          let isIsland = false
           const sourceCode = await readFile(args.path, 'utf8')
 
           if (
@@ -46,7 +46,7 @@ function esbuildPlugin(options = defaultOptions) {
             (options && options.esbuild) || {}
           )
 
-          const jsCode = esbuild.transform(sourceCode, {
+          const jsCode = await esbuild.transform(sourceCode, {
             loader: 'tsx',
             platform: 'node',
             target: 'node16',
@@ -57,8 +57,14 @@ function esbuildPlugin(options = defaultOptions) {
             ...esbuildTransformOptions,
           })
 
+          let inputCode = jsCode.code
+
+          if (isIsland) {
+            inputCode = '//@island\n' + inputCode
+          }
+
           generatorOutput = generateIslandsWithSource(
-            (await jsCode).code,
+            inputCode,
             args.path,
             options
           )
