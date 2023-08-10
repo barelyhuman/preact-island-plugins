@@ -39,23 +39,42 @@ function rollupPlugin(options = defaultOptions) {
       const typescript = autoLoadTypescriptPlug()
 
       if (id.endsWith('ts') || id.endsWith('tsx')) {
+        let isIsland = false
+        const baseTransformTSConfig = await resolveTsConfig(options.tsconfig)
         const builder = await rollup.rollup({
           input: id,
           acornInjectPlugins: [jsx()],
           plugins: [
             typescript({
-              ...(await resolveTsConfig(options.client.tsconfig)),
               // Override given tsconfig's jsx property
               // for the client source since, it is the expected
               // input for the plugin
               // and modified by the plugin
-              jsx: 'preserve',
+              ...baseTransformTSConfig,
+              compilerOptions: {
+                ...baseTransformTSConfig.compilerOptions,
+                jsx: 'preserve',
+              },
             }),
           ],
         })
         const build = await builder.generate({})
         const sourceCode = build.output[0].code
-        generatedOutput = generateIslandsWithSource(sourceCode, id, options)
+
+        if (
+          sourceCode.indexOf('//@island') > -1 ||
+          sourceCode.indexOf('// @island') > -1
+        ) {
+          isIsland = true
+        }
+
+        let inputCode = sourceCode
+
+        if (isIsland) {
+          inputCode = '//@island\n' + inputCode
+        }
+
+        generatedOutput = generateIslandsWithSource(inputCode, id, options)
       } else {
         generatedOutput = generateIslands(id, options)
       }
