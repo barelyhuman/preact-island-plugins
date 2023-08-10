@@ -42,9 +42,8 @@
     "acorn-private-methods": "^1.0.0",
     "acorn-static-class-features": "^1.0.0",
     "astring": "^1.8.6",
-    "astring-jsx": "^1.0.1",
-    "esbuild": "^0.18.11",
-    "xtend": "^4.0.2"
+    "@barelyhuman/astring-jsx": "^2.0.0",
+    "esbuild": "^0.18.11"
   },
   "devDependencies": {
     "@babel/core": "^7.22.8",
