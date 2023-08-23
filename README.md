@@ -1,23 +1,18 @@
 # preact-island-plugins
 
-> Bundler plugins to make preact islands a breeze to work with
+> Preact server rendered, partial hydration and islands for everyone!
 
-## Description
+[Read FAQs &rarr;](#faqs)
 
-The aim of the project is to make it easy for both users and frameworks to be
-able to build preact islands by just plugging the functionality into the
-bundler.
+## Highlights
 
-This allows anyone go be able to create a Server Rendered, Partially hydrated
-app without getting locked into a framework
-
-## Features
-
-- Bundler plugins for Rollup, ESBuild, Webpack(Soon)
-- Works with preact (duh.)
-- Easy island declarations
-  - File based `.island.js`
-  - Comment Based `//@island`
+- Tiny
+- Tree Shakeable
+- Flexibile / Not dependent on folder structure
+  - Use either `.island.js` file extensions for initialize islands
+  - or `//@island` top level file comments
+- Lazy loaded components
+- Lazy Hydration Modifiers - `//@island lazy`
 
 ## Installation
 
@@ -44,7 +39,8 @@ const preactIslands = require('@barelyhuman/preact-island-plugins/rollup')
 const preactIslands = require('@barelyhuman/preact-island-plugins/esbuild')
 ```
 
-Both bundlers use the same Options type
+Both bundlers use the same Options type, please read through the API options
+below to configure the behaviour of the island generation
 
 ```ts
 export interface Options {
@@ -65,6 +61,120 @@ export interface Options {
   }
 }
 ```
+
+## How ?
+
+The source code is pretty small but if it's just the concept behind that you
+wish to understand, then please keep reading this.
+
+Islands are normally interactive elements or tiny apps that are mounted on parts
+of a static html. This is done to minimize the amount of JS used by the app. A
+lot of frameworks come with this already setup for you.
+
+- [Astro.build](http://astro.build/)
+- [Deno Fresh](http://fresh.deno.dev/)
+
+There's tiny differences in the implementations that each of us use but the
+overall concept remains same. The only difference being you don't have to
+migrate your whole app to these frameworks just to enjoy islands or get rid of
+let's say something like old JQuery dependencies. I like JQuery but it'll
+probably be easier to use something better at handling state today.
+
+You can also be someone who doesn't like frameworks and would prefer working
+with their own set of choices / decisions in tech. This is also where something
+like this might be helpful.
+
+Overall, it's tiny enough to build your own framework on top off and also shove
+it down the structure you already have.
+
+#### Example Configs
+
+```js
+// build.js
+// for esbuild
+const esbuild = require('esbuild')
+const preactIslands = require('@barelyhuman/preact-island-plugins/esbuild')
+
+esbuild
+  .build({
+    entryPoints: ['./server.js'],
+    format: 'cjs',
+    target: 'node16',
+    platform: 'node',
+    bundle: true,
+    jsx: 'automatic',
+    jsxImportSource: 'preact',
+    loader: {
+      '.js': 'jsx',
+    },
+    outdir: 'dist',
+    plugins: [preactIslands()],
+  })
+  .then(_ => process.exit(0))
+  .catch(_ => process.exit(1))
+```
+
+```js
+// rollup.config.js
+const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const { babel } = require('@rollup/plugin-babel')
+const preactIslands = require('@barelyhuman/preact-island-plugins/rollup')
+const { DEFAULT_EXTENSIONS } = require('@babel/core')
+const typescript = require('@rollup/plugin-typescript').default
+
+/**
+ * @type {import("rollup").RollupOptions}
+ */
+module.exports = {
+  input: 'server.js',
+  output: {
+    dir: 'dist',
+    format: 'cjs',
+  },
+  plugins: [
+    // helper plugins to handle typescript for the remaining of the server
+    typescript({
+      compilerOptions: {
+        jsx: 'react-jsx',
+        jsxImportSource: 'preact',
+      },
+    }),
+    preactPlugin(),
+    // subset handlers for the remaining of the server to handle jsx
+    babel({
+      plugins: [
+        [
+          '@babel/plugin-transform-react-jsx',
+          { runtime: 'automatic', importSource: 'preact' },
+        ],
+      ],
+      babelHelpers: 'bundled',
+      extensions: [...DEFAULT_EXTENSIONS, '.ts', '.tsx'],
+    }),
+  ],
+}
+```
+
+# FAQS
+
+**What on earth in islands?**\
+
+- Glad you asked, You can
+  [read about it on here](https://barelyhuman.github.io/preact-islands-diy/)
+
+**Who's this library/plugins for?**\
+
+- Anyone who wishes to setup the partial hydration on a server framework.
+- You could be someone with an express / fastify / hapi server using nunjucks or
+  pug and jquery / alpine.js / htmx to add in interactivity.
+- You can add this in and use preact islands to add interactivity to your apps
+  without thinking about it.
+
+**Examples, please?**\
+
+- Sure, you can go through the [playground](/playground) folder to see how to
+  use it with esbuild and rollup with an express server. If you an issue setting
+  it up still,feel free to raise an issue.
 
 ## Contributing
 
