@@ -18,7 +18,7 @@ export interface Options {
   hash?: boolean
   tsconfig: string | TSConfig
   client: {
-    tsconfig: string | TSConfig
+    tsconfig?: string | TSConfig
     output: string
   }
 }
