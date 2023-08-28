@@ -7,6 +7,8 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve')
 const jsx = require('acorn-jsx')
 const { babel } = require('@rollup/plugin-babel')
 const { resolveTsConfig } = require('./lib/typescript')
+const path = require('path')
+const { ALLOWED_EXTENSIONS } = require('./lib/constants')
 
 exports = module.exports = rollupPlugin
 
@@ -30,6 +32,7 @@ function rollupPlugin(options = defaultOptions) {
   return {
     name: 'preact-island-plugin',
     async transform(_, id) {
+      if (!ALLOWED_EXTENSIONS.includes(path.extname(id))) return
       if (id.includes('virtual:')) return
       // ignore files that don't exist
       if (!existsSync(id)) return
