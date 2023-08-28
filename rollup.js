@@ -94,7 +94,7 @@ function rollupPlugin(options = defaultOptions) {
           plugins: [
             typescript({
               ...(await resolveTsConfig(options.client.tsconfig)),
-              jsx: 'react-jsx',
+              jsx: 'preserve',
               jsxImportSource: 'preact',
             }),
             nodeResolve(),
