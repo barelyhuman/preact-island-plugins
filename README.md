@@ -8,8 +8,8 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Concepts](#concepts)
-  - [File Name Extensiom ](#file-name-extensiom)
-  - [Top Level comments ](#top-level-comments)
+  - [File Name Extensiom](#file-name-extensiom)
+  - [Top Level comments](#top-level-comments)
   - [Lazy Hydration](#lazy-hydration)
 - [Limitations](#limitations)
 - [Example Configs](#example-configurations)
@@ -29,8 +29,24 @@
 
 ## Installation
 
+The installation differs based on which plugin you wish to use.
+
+### esbuild
+
 ```sh
-npm i @barelyhuman/preact-island-plugins
+npm i esbuild @barelyhuman/preact-island-plugins preact
+```
+
+### rollup
+
+```sh
+npm i rollup preact @barelyhuman/preact-island-plugins @rollup/plugin-babel @rollup/plugin-node
+```
+
+if using `typescript`, you should also add that when using `rollup`
+
+```sh
+npm i @rollup/plugin-typescript
 ```
 
 ## Usage
@@ -241,12 +257,12 @@ it down the structure you already have.
 
 # FAQS
 
-**What on earth in islands?**\
+**What on earth in islands?**
 
 - Glad you asked, You can
   [read about it on here](https://barelyhuman.github.io/preact-islands-diy/)
 
-**Who's this library/plugins for?**\
+**Who's this library/plugins for?**
 
 - Anyone who wishes to setup the partial hydration on a server framework.
 - You could be someone with an express / fastify / hapi server using nunjucks or
@@ -254,7 +270,7 @@ it down the structure you already have.
 - You can add this in and use preact islands to add interactivity to your apps
   without thinking about it.
 
-**Examples, please?**\
+**Examples, please?**
 
 - Sure, you can go through the [playground](/playground) folder to see how to
   use it with esbuild and rollup with an express server. If you an issue setting

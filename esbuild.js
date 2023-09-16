@@ -4,6 +4,7 @@ const { mkdir, readFile } = require('fs/promises')
 const { dirname } = require('path')
 const esbuild = require('esbuild')
 const { resolveTsConfig } = require('./lib/typescript')
+const { defu } = require('defu')
 
 exports = module.exports = esbuildPlugin
 
@@ -24,6 +25,8 @@ const defaultOptions = {
  * @returns
  */
 function esbuildPlugin(options = defaultOptions) {
+  options = defu(options, defaultOptions)
+
   return {
     name: 'preact-island-plugin',
     async setup(build) {

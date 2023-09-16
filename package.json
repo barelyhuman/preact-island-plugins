@@ -34,6 +34,7 @@
   },
   "prettier": "@barelyhuman/prettier-config",
   "dependencies": {
+    "@barelyhuman/astring-jsx": "^2.0.0",
     "acorn": "^8.10.0",
     "acorn-class-fields": "^1.0.0",
     "acorn-import-assertions": "^1.7.2",
@@ -42,7 +43,7 @@
     "acorn-private-methods": "^1.0.0",
     "acorn-static-class-features": "^1.0.0",
     "astring": "^1.8.6",
-    "@barelyhuman/astring-jsx": "^2.0.0",
+    "defu": "^6.1.2",
     "esbuild": "^0.18.11"
   },
   "devDependencies": {

@@ -9,6 +9,7 @@ const { babel } = require('@rollup/plugin-babel')
 const { resolveTsConfig } = require('./lib/typescript')
 const path = require('path')
 const { ALLOWED_EXTENSIONS } = require('./lib/constants')
+const { defu } = require('defu')
 
 exports = module.exports = rollupPlugin
 
@@ -29,8 +30,11 @@ const defaultOptions = {
  * @returns {import("rollup").Plugin}
  */
 function rollupPlugin(options = defaultOptions) {
+  options = defu(options, defaultOptions)
   return {
     name: 'preact-island-plugin',
+    // vite specific option
+    enforce: 'pre',
     async transform(_, id) {
       if (!ALLOWED_EXTENSIONS.includes(path.extname(id))) return
       if (id.includes('virtual:')) return
