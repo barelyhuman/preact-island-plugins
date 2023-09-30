@@ -40,7 +40,7 @@ npm i esbuild @barelyhuman/preact-island-plugins preact
 ### rollup
 
 ```sh
-npm i rollup preact @barelyhuman/preact-island-plugins @rollup/plugin-babel @rollup/plugin-node
+npm i rollup preact @barelyhuman/preact-island-plugins @rollup/plugin-babel @rollup/plugin-node-resolve
 ```
 
 if using `typescript`, you should also add that when using `rollup`
