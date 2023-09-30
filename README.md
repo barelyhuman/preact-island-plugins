@@ -2,6 +2,8 @@
 
 > Preact server rendered, partial hydration and islands for everyone!
 
+<img alt="preact-logo" src="/.github/assets/preact.svg" />
+
 ## TOC
 
 - [Highlights](#highlights)
