@@ -1,8 +1,8 @@
 # preact-island-plugins
 
-> Preact server rendered, partial hydration and islands for everyone!
-
-<img alt="preact-logo" src="/.github/assets/preact.svg" />
+<blockquote style="display:flex; align-items:center">
+<img height=20 src="https://preactjs.com/favicon.ico" /> Preact server rendered, partial hydration and islands for everyone!
+</blockquote>
 
 ## TOC
 
