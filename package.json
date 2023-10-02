@@ -18,7 +18,7 @@
     "play:build:esbuild": "cd playground; npm run build:esbuild",
     "play:build:rollup": "cd playground; npm run build:rollup",
     "prepare": "husky install",
-    "test": "echo 'tested'"
+    "test": "uvu"
   },
   "files": [
     "index.js",
@@ -40,10 +40,10 @@
     "acorn-import-assertions": "^1.7.2",
     "acorn-jsx": "^5.3.1",
     "acorn-jsx-walk": "^2.0.0",
-    "acorn-walk": "^8.2.0",
     "acorn-logical-assignment": "^0.1.4",
     "acorn-private-methods": "^1.0.0",
     "acorn-static-class-features": "^1.0.0",
+    "acorn-walk": "^8.2.0",
     "astring": "^1.8.6",
     "defu": "^6.1.2",
     "esbuild": "^0.18.11"
@@ -58,9 +58,13 @@
     "bumpp": "^9.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
+    "magic-string": "^0.30.4",
     "prettier": "^3.0.0",
+    "pretty-format": "^29.7.0",
     "rollup": "^3.26.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "uvu": "^0.5.6",
+    "uvu-inline-snapshot": "^0.0.2"
   },
   "peerDependencies": {
     "@rollup/plugin-babel": "^6.0.3",
