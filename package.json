@@ -34,7 +34,7 @@
   },
   "prettier": "@barelyhuman/prettier-config",
   "dependencies": {
-    "@barelyhuman/astring-jsx": "^2.0.0",
+    "@barelyhuman/astring-jsx": "^2.0.1",
     "acorn": "^8.10.0",
     "acorn-class-fields": "^1.0.0",
     "acorn-import-assertions": "^1.7.2",
