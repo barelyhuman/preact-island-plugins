@@ -1,4 +1,3 @@
-// @island
 import { useState } from 'preact/hooks'
 
 export default function TextIsland() {

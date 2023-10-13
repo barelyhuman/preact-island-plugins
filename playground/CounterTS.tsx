@@ -14,9 +14,12 @@ export default function CounterTS({ value, inc }: Props) {
   return (
     <>
       <button onClick={inc}>{value}</button>
-      <button onClick={() => (internalCount.value += 1)}>
-        internal:{internalCount}
-      </button>
+      <div>
+        internal to CounterTS:
+        <button onClick={() => (internalCount.value += 1)}>
+          {internalCount}
+        </button>
+      </div>
     </>
   )
 }
