@@ -18,7 +18,8 @@
     "play:build:esbuild": "cd playground; npm run build:esbuild",
     "play:build:rollup": "cd playground; npm run build:rollup",
     "prepare": "husky install",
-    "test": "uvu"
+    "test": "uvu",
+    "test:ci": "c8 uvu"
   },
   "files": [
     "index.js",
@@ -56,6 +57,7 @@
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-typescript": "^11.1.2",
     "bumpp": "^9.1.1",
+    "c8": "^8.0.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
     "magic-string": "^0.30.4",
