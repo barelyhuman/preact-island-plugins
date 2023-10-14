@@ -26,7 +26,7 @@
 - Flexibile / Not dependent on folder structure
   - Use either `.island.js` file extensions for initialize islands
   - or `//@island` top level file comments
-- Lazy loaded components
+  - Automatic detection of an island (`since v0.1.2`)
 - Lazy Hydration Modifiers - `//@island lazy`
 
 ## Installation
@@ -191,6 +191,8 @@ esbuild
   .catch(_ => process.exit(1))
 ```
 
+For rollup, it might look something like this
+
 ```js
 // rollup.config.js
 const { nodeResolve } = require('@rollup/plugin-node-resolve')
@@ -238,21 +240,22 @@ The source code is pretty small but if it's just the concept behind that you
 wish to understand, then please keep reading this.
 
 Islands are normally interactive elements or tiny apps that are mounted on parts
-of a static html. This is done to minimize the amount of JS used by the app. A
-lot of frameworks come with this already setup for you.
+of a static html. This is done to minimize the amount of JS sent to the client
+by your app. A lot of frameworks already handle this for you, a few examples
+are:
 
 - [Astro.build](http://astro.build/)
 - [Deno Fresh](http://fresh.deno.dev/)
 
 There's tiny differences in the implementations that each of us use but the
-overall concept remains same. The only difference being you don't have to
-migrate your whole app to these frameworks just to enjoy islands or get rid of
-let's say something like old JQuery dependencies. I like JQuery but it'll
-probably be easier to use something better at handling state today.
+overall concept remains same. The only reason to choose this plugin would be
+that you don't have to migrate your whole app to the framework just to enjoy
+islands or get rid of let's say something like old JQuery dependencies. I like
+JQuery but it'll probably be easier to use something better at handling state
+today.
 
-You can also be someone who doesn't like frameworks and would prefer working
-with their own set of choices / decisions in tech. This is also where something
-like this might be helpful.
+This can also be used by someone who doesn't like frameworks and would prefer
+working with their own set of choices / decisions in their tech stack.
 
 Overall, it's tiny enough to build your own framework on top off and also shove
 it down the structure you already have.
@@ -266,17 +269,14 @@ it down the structure you already have.
 
 **Who's this library/plugins for?**
 
-- Anyone who wishes to setup the partial hydration on a server framework.
-- You could be someone with an express / fastify / hapi server using nunjucks or
-  pug and jquery / alpine.js / htmx to add in interactivity.
-- You can add this in and use preact islands to add interactivity to your apps
-  without thinking about it.
+- Anyone who wishes to setup partial hydration on an existing server codebase.
+- People building meta frameworks for preact
 
 **Examples, please?**
 
 - Sure, you can go through the [playground](/playground) folder to see how to
-  use it with esbuild and rollup with an express server. If you an issue setting
-  it up still,feel free to raise an issue.
+  use it with esbuild and rollup with an express server. If you have any
+  problems setting it up still, feel free to raise an issue.
 
 ## Contributing
 
