@@ -143,7 +143,7 @@ customElements.define("island-component", class IslandComponent extends HTMLElem
 
   renderIsland(){
     mergePropsWithDOM(this, this.baseProps);
-    render(restoreTree(this.component.default, this.baseProps), this, this)
+    render(restoreTree(this.component.default, this.baseProps), this, undefined)
   }
 })`
   )
@@ -278,7 +278,7 @@ customElements.define("island-component", class IslandComponent extends HTMLElem
 
   renderIsland(){
     mergePropsWithDOM(this, this.baseProps);
-    render(restoreTree(this.component.default, this.baseProps), this, this)
+    render(restoreTree(this.component.default, this.baseProps), this, undefined)
   }
 })`
   )
