@@ -8,6 +8,7 @@ const { defu } = require('defu')
 
 exports = module.exports = esbuildPlugin
 
+/**@type {import("../lib/types").ESbuildOptions} */
 const defaultOptions = {
   rootDir: '.',
   baseURL: '/public',
@@ -17,6 +18,7 @@ const defaultOptions = {
   client: {
     tsconfig: './tsconfig.json',
     output: './dist/client',
+    replaceParentNode: false,
   },
 }
 

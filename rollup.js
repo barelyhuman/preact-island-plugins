@@ -13,6 +13,7 @@ const { defu } = require('defu')
 
 exports = module.exports = rollupPlugin
 
+/**@type {import("../lib/types").Options} */
 const defaultOptions = {
   rootDir: '.',
   baseURL: '/public',
@@ -20,6 +21,7 @@ const defaultOptions = {
   hash: false,
   tsconfig: './tsconfig.json',
   client: {
+    replaceParentNode: false,
     tsconfig: './tsconfig.json',
     output: './dist/client',
   },

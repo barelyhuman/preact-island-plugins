@@ -18,6 +18,7 @@ export interface Options {
   hash?: boolean
   tsconfig: string | TSConfig
   client: {
+    replaceParentNode: boolean
     tsconfig?: string | TSConfig
     output: string
   }
