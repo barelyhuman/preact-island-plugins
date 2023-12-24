@@ -300,4 +300,40 @@ export default function IslandComponent(props) {
   )
 })
 
+test('parse island with a private class method', async () => {
+  const output = generateIslandsWithSource(
+    `
+      class Hello {
+        constructor(){}
+        #privateMethod(){}
+      }
+      
+      export default function Component(){
+          return <p>hello</p>
+      }
+    `,
+    './index.jsx',
+    {
+      rootDir: '.',
+      client: {
+        output: '.islands',
+      },
+    }
+  )
+
+  await inlineSnapshot(
+    output.code.server,
+    `
+      class Hello {
+        constructor(){}
+        #privateMethod(){}
+      }
+      
+      export default function Component(){
+          return <p>hello</p>
+      }
+    `
+  )
+})
+
 test.run()

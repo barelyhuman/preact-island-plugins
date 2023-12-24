@@ -42,6 +42,7 @@
     "acorn-jsx": "^5.3.1",
     "acorn-jsx-walk": "^2.0.0",
     "acorn-logical-assignment": "^0.1.4",
+    "acorn-loose": "^8.4.0",
     "acorn-private-class-elements": "^1.0.0",
     "acorn-private-methods": "^1.0.0",
     "acorn-static-class-features": "^1.0.0",
