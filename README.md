@@ -4,6 +4,9 @@
 <img height=20 src="https://preactjs.com/favicon.ico" /> Preact server rendered, partial hydration and islands for everyone!
 </blockquote>
 
+> [!TIP]
+> If you need a more flexible and functional API for building Preact islands, check out [Preland](https://github.com/dumbjs/preland)
+
 ## TOC
 
 - [Highlights](#highlights)
