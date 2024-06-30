@@ -1,5 +1,5 @@
 const esbuild = require('esbuild')
-const preactIslands = require('../esbuild')
+const preactIslands = require('@barelyhuman/preact-island-plugins/esbuild')
 
 esbuild
   .build({
