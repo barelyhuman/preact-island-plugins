@@ -7,7 +7,10 @@
   "exports": {
     ".": "./index.js",
     "./internals": "./internals.js",
-    "./esbuild": "./esbuild.js",
+    "./esbuild": {
+      "types": "./esbuild.d.ts",
+      "default": "./esbuild.js"
+    },
     "./rollup": "./rollup.js"
   },
   "main": "index.js",

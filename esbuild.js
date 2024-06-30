@@ -2,36 +2,43 @@ const { generateIslands, generateIslandsWithSource } = require('./lib/plugin')
 const { writeFileSync } = require('fs')
 const { mkdir, readFile } = require('fs/promises')
 const { dirname } = require('path')
-const esbuild = require('esbuild')
 const { resolveTsConfig } = require('./lib/typescript')
 const { defu } = require('defu')
+const { simpleOmit } = require('./lib/omit')
 
 exports = module.exports = esbuildPlugin
 
-/**@type {import("../lib/types").ESbuildOptions} */
+/**@type {import("./lib/types").ESbuildOptions} */
 const defaultOptions = {
   rootDir: '.',
   baseURL: '/public',
   atomic: true,
   hash: false,
-  tsconfig: './tsconfig.json',
   client: {
-    tsconfig: './tsconfig.json',
     output: './dist/client',
     replaceParentNode: false,
   },
 }
 
 /**
- * @param {import('../lib/types').ESbuildOptions} options
- * @returns
+ * @param {import('./lib/types.d.ts').ESbuildOptions} options
+ * @returns {import("esbuild").Plugin}
  */
 function esbuildPlugin(options = defaultOptions) {
   options = defu(options, defaultOptions)
 
+  if (options.client?.tsconfig || options.tsconfig) {
+    throw new Error(
+      '[preact-island-plugin] tsconfig/client.tsconfig is no longer taken from the plugin config and is instead picked from the original esbuild configuration'
+    )
+  }
+
   return {
     name: 'preact-island-plugin',
     async setup(build) {
+      const esbuild = build.esbuild
+      const userTsConfig = build.initialOptions.tsconfig
+      const userTsConfigRaw = build.initialOptions.tsconfigRaw
       build.onLoad({ filter: /\.(js|ts)x?$/ }, async args => {
         let generatorOutput
 
@@ -46,9 +53,9 @@ function esbuildPlugin(options = defaultOptions) {
             isIsland = true
           }
 
-          const esbuildTransformOptions = Object.assign(
-            {},
-            (options && options.esbuild) || {}
+          const esbuildTransformOptions = simpleOmit(
+            Object.assign({}, (options && options.esbuild) || {}),
+            ['loader', 'jsx']
           )
 
           const jsCode = await esbuild.transform(sourceCode, {
@@ -57,7 +64,7 @@ function esbuildPlugin(options = defaultOptions) {
             target: 'node16',
             jsx: 'preserve',
             tsconfigRaw: {
-              ...(await resolveTsConfig(options.tsconfig)),
+              ...userTsConfigRaw,
             },
             ...esbuildTransformOptions,
           })
@@ -87,7 +94,9 @@ function esbuildPlugin(options = defaultOptions) {
             bundle: true,
             allowOverwrite: true,
             outfile: paths.client,
+            tsconfig: userTsConfig,
             tsconfigRaw: {
+              ...userTsConfigRaw,
               ...(await resolveTsConfig(
                 options.client && options.client.tsconfig
               )),

@@ -26,4 +26,16 @@ export interface Options {
 
 export type ESbuildOptions = Options & {
   esbuild?: TransformOptions
+} & {
+  /**@deprecated the original options to esbuild will be inherited*/
+  tsconfig: string | TSConfig
+  client: {
+    /**@deprecated the original options to esbuild will be inherited*/
+    tsconfig?: string | TSConfig
+  }
 }
+
+export type SimpleOmit = <T, Y extends keyof T>(
+  obj: T,
+  props: Y[]
+) => Omit<T, Y>
