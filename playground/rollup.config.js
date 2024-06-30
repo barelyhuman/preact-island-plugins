@@ -1,6 +1,6 @@
 const { nodeResolve } = require('@rollup/plugin-node-resolve')
 const { babel } = require('@rollup/plugin-babel')
-const preactPlugin = require('../rollup')
+const preactPlugin = require('@barelyhuman/preact-island-plugins/rollup')
 const { DEFAULT_EXTENSIONS } = require('@babel/core')
 const typescript = require('@rollup/plugin-typescript').default
 
