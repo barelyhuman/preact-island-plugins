@@ -15,14 +15,17 @@ jobs:
           node-version: '18'
           registry-url: https://registry.npmjs.org/
 
+      - name: Setup pnpm
+        run: corepack enable
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Test
-        run: npm run test
+        run: pnpm run test
 
       - name: Publish
         run: |
-          npm publish --tag beta
+          pnpm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

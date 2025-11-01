@@ -18,8 +18,8 @@
     "fix": "npx prettier --write .",
     "next": "bumpp",
     "play": "cd playground; node build.js; node dist/server.js",
-    "play:build:esbuild": "cd playground; npm run build:esbuild",
-    "play:build:rollup": "cd playground; npm run build:rollup",
+    "play:build:esbuild": "cd playground; pnpm run build:esbuild",
+    "play:build:rollup": "cd playground; pnpm run build:rollup",
     "prepare": "husky install",
     "test": "uvu",
     "test:ci": "c8 uvu"

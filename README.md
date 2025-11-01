@@ -4,8 +4,8 @@
 <img height=20 src="https://preactjs.com/favicon.ico" /> Preact server rendered, partial hydration and islands for everyone!
 </blockquote>
 
-> [!TIP]
-> If you need a more flexible and functional API for building Preact islands, check out [Preland](https://github.com/dumbjs/preland)
+> [!TIP] If you need a more flexible and functional API for building Preact
+> islands, check out [Preland](https://github.com/dumbjs/preland)
 
 ## TOC
 
@@ -39,19 +39,19 @@ The installation differs based on which plugin you wish to use.
 ### esbuild
 
 ```sh
-npm i esbuild @barelyhuman/preact-island-plugins preact
+pnpm add esbuild @barelyhuman/preact-island-plugins preact
 ```
 
 ### rollup
 
 ```sh
-npm i rollup preact @barelyhuman/preact-island-plugins @rollup/plugin-babel @rollup/plugin-node-resolve
+pnpm add rollup preact @barelyhuman/preact-island-plugins @rollup/plugin-babel @rollup/plugin-node-resolve
 ```
 
 if using `typescript`, you should also add that when using `rollup`
 
 ```sh
-npm i @rollup/plugin-typescript
+pnpm add @rollup/plugin-typescript
 ```
 
 ## Usage
