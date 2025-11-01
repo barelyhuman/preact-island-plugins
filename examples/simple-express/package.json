@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run build; concurrently 'npm run dev:watch' 'npm run dev:start'",
+    "dev": "pnpm run build; concurrently 'pnpm run dev:watch' 'pnpm run dev:start'",
     "dev:watch": "node build.js",
     "dev:start": "nodemon dist/app.js",
     "build": "node build.js",
