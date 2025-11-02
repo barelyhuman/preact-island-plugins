@@ -1,5 +1,6 @@
 const { generateIslands, generateIslandsWithSource } = require('./lib/plugin')
 const { writeFileSync, existsSync } = require('fs')
+const { transform, build } = require('esbuild')
 const { mkdir } = require('fs/promises')
 const { dirname } = require('path')
 const rollup = require('rollup')
@@ -19,10 +20,8 @@ const defaultOptions = {
   baseURL: '/public',
   atomic: true,
   hash: false,
-  tsconfig: './tsconfig.json',
   client: {
     replaceParentNode: false,
-    tsconfig: './tsconfig.json',
     output: './dist/client',
   },
 }
@@ -37,56 +36,24 @@ function rollupPlugin(options = defaultOptions) {
     name: 'preact-island-plugin',
     // vite specific option
     enforce: 'pre',
-    async transform(_, id) {
+    async transform(sourceCode, id) {
       if (!ALLOWED_EXTENSIONS.includes(path.extname(id))) return
       if (id.includes('virtual:')) return
       // ignore files that don't exist
       if (!existsSync(id)) return
 
-      let generatedOutput
+      const normalizedCode = await transform(sourceCode, {
+        jsx: 'preserve',
+        format: 'esm',
+        platform: 'neutral',
+        loader: 'tsx',
+      })
 
-      const typescript = autoLoadTypescriptPlug()
-
-      if (id.endsWith('ts') || id.endsWith('tsx')) {
-        let isIsland = false
-        const baseTransformTSConfig = await resolveTsConfig(options.tsconfig)
-        const builder = await rollup.rollup({
-          input: id,
-          acornInjectPlugins: [jsx()],
-          plugins: [
-            typescript({
-              // Override given tsconfig's jsx property
-              // for the client source since, it is the expected
-              // input for the plugin
-              // and modified by the plugin
-              ...baseTransformTSConfig,
-              compilerOptions: {
-                ...baseTransformTSConfig.compilerOptions,
-                jsx: 'preserve',
-              },
-            }),
-          ],
-        })
-        const build = await builder.generate({})
-        const sourceCode = build.output[0].code
-
-        if (
-          sourceCode.indexOf('//@island') > -1 ||
-          sourceCode.indexOf('// @island') > -1
-        ) {
-          isIsland = true
-        }
-
-        let inputCode = sourceCode
-
-        if (isIsland) {
-          inputCode = '//@island\n' + inputCode
-        }
-
-        generatedOutput = generateIslandsWithSource(inputCode, id, options)
-      } else {
-        generatedOutput = generateIslands(id, options)
-      }
+      const generatedOutput = generateIslandsWithSource(
+        normalizedCode.code,
+        id,
+        options
+      )
 
       const { code, paths } = generatedOutput
 
@@ -94,35 +61,29 @@ function rollupPlugin(options = defaultOptions) {
         await mkdir(dirname(paths.client), { recursive: true })
         writeFileSync(paths.client, code.client, 'utf8')
 
-        const builder = await rollup.rollup({
-          input: paths.client,
-          acornInjectPlugins: [jsx()],
-          plugins: [
-            typescript({
-              ...(await resolveTsConfig(options.client.tsconfig)),
-              jsx: 'preserve',
-              jsxImportSource: 'preact',
-            }),
-            nodeResolve(),
-            babel({
-              babelHelpers: 'bundled',
-              plugins: [
-                [
-                  '@babel/plugin-transform-react-jsx',
-                  { runtime: 'automatic', importSource: 'preact' },
-                ],
-              ],
-            }),
-          ],
-        })
-        await builder.write({
+        await build({
+          entryPoints: [paths.client],
+          platform: 'browser',
+          allowOverwrite: true,
+          bundle: true,
+          jsx: 'automatic',
+          jsxImportSource: 'preact',
+          loader: {
+            '.js': 'jsx',
+          },
           format: 'esm',
-          dir: dirname(paths.client),
+          outdir: dirname(paths.client),
         })
       }
 
+      const serverFinalTransform = await transform(code.server, {
+        jsx: 'automatic',
+        jsxImportSource: 'preact',
+        loader: 'jsx',
+      })
+
       return {
-        code: code.server,
+        code: serverFinalTransform.code,
         map: null,
       }
     },
