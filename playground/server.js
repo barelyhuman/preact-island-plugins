@@ -1,5 +1,5 @@
 import express from 'express'
-import comToString from 'preact-render-to-string'
+import renderToString from 'preact-render-to-string'
 import serveStatic from 'serve-static'
 import { join } from 'path'
 import Container from './Container'
@@ -9,7 +9,7 @@ const app = express()
 app.use('/public', serveStatic(join(__dirname, './client')))
 
 app.get('/', (req, res) => {
-  return res.send(comToString(<Container />))
+  return res.send(renderToString(<Container />))
 })
 
 app.listen(3000, () => {
