@@ -1,4 +1,4 @@
-const { generateIslands, generateIslandsWithSource } = require('./lib/plugin')
+const { generateIslandsWithSource } = require('./lib/plugin')
 const { writeFileSync, existsSync } = require('fs')
 const { transform, build } = require('esbuild')
 const { mkdir } = require('fs/promises')
