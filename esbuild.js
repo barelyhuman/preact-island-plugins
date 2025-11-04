@@ -4,6 +4,7 @@ const { mkdir, readFile } = require('fs/promises')
 const { dirname } = require('path')
 const { resolveTsConfig } = require('./lib/typescript')
 const { defu } = require('defu')
+const { transform, build: esbuildBuilder } = require('esbuild')
 const { simpleOmit } = require('./lib/omit')
 
 exports = module.exports = esbuildPlugin
@@ -58,14 +59,11 @@ function esbuildPlugin(options = defaultOptions) {
             ['loader', 'jsx']
           )
 
-          const jsCode = await esbuild.transform(sourceCode, {
+          const jsCode = await transform(sourceCode, {
             loader: 'tsx',
             platform: 'node',
             target: 'node16',
             jsx: 'preserve',
-            tsconfigRaw: {
-              ...userTsConfigRaw,
-            },
             ...esbuildTransformOptions,
           })
 
@@ -89,18 +87,11 @@ function esbuildPlugin(options = defaultOptions) {
         if (paths.client) {
           await mkdir(dirname(paths.client), { recursive: true })
           writeFileSync(paths.client, code.client, 'utf8')
-          await esbuild.build({
+          await esbuildBuilder({
             entryPoints: [paths.client],
             bundle: true,
             allowOverwrite: true,
             outfile: paths.client,
-            tsconfig: userTsConfig,
-            tsconfigRaw: {
-              ...userTsConfigRaw,
-              ...(await resolveTsConfig(
-                options.client && options.client.tsconfig
-              )),
-            },
             platform: 'browser',
             jsx: 'automatic',
             jsxImportSource: 'preact',
